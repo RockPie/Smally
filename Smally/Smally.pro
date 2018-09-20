@@ -36,12 +36,14 @@ CONFIG += console
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    gplot.cpp
+    gplot.cpp \
+    gdatabase.cpp
 
 HEADERS += \
         mainwindow.h \
     gplot.h \
-    gsetting.h
+    gsetting.h \
+    gdatabase.h
 
 FORMS += \
         mainwindow.ui
