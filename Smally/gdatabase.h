@@ -5,7 +5,7 @@
 #include <QString>
 #include <QObject>
 
-class Spectral:
+class Spectral
 {
 public:
     Spectral(const QString ele = QString(), const uint nucnum = 0);
