@@ -7,7 +7,6 @@
 #include <qwt_symbol.h>
 #include <QtGui>
 #include "gsetting.h"
-#include "gdatabase.h"
 
 class OverallPlot: public QwtPlot
 {
@@ -15,6 +14,7 @@ class OverallPlot: public QwtPlot
 public:
     explicit OverallPlot(QWidget *parent);
     ~OverallPlot();
+    void OADataReceive(const QVector<QPointF> OAdata);
 private:
     void InitCanvas();
     void AddSysCurve();

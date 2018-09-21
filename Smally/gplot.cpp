@@ -20,6 +20,7 @@ OverallPlot::OverallPlot(QWidget *parent):
     InitCanvas();
     AddSysCurve();
     AddMainCurve();
+    qDebug()<<"Main Plot Initialized";
 }
 
 OverallPlot::~OverallPlot()
@@ -78,5 +79,24 @@ void OverallPlot::AddSysCurve()
     SysCurve[1].setStyle(QwtPlotCurve::Lines);
     SysCurve[0].attach(this);
     SysCurve[1].attach(this);
+}
+
+void OverallPlot::OADataReceive(
+        const QVector <QPointF> OAdata)
+{
+    MainCurve->setSamples(OAdata);
+    uint64_t MaxVal = uint64_t(OAdata[0].y());
+    for(int counter = 1; counter < OAdata.length(); counter++)
+        if(MaxVal < uint64_t(OAdata[counter].y()))
+            MaxVal = uint64_t(OAdata[counter].y());
+    if(MaxVal > uint64_t(0.9 * axisInterval(QwtPlot::yLeft).maxValue()))
+    {
+        SysCurveY[1] = double(MaxVal) * 1.2;
+        setAxisScale(QwtPlot::yLeft  , 0.0,
+                     1.5 * axisInterval(QwtPlot::yLeft).maxValue());
+    }
+    SysCurve[0].setSamples(SysCurveXmin, SysCurveY, 2);
+    SysCurve[1].setSamples(SysCurveXmax, SysCurveY, 2);
+    replot();
 }
 
