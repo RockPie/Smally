@@ -32,6 +32,12 @@ void Spectral::setSysCurve(uint InitChannel,
     SysChannel = InitChannel;
 }
 
+void Spectral::setSysCurve(uint64_t InitMax, uint64_t InitMin)
+{
+    CountingData[0] = InitMin;
+    CountingData[1] = InitMax;
+}
+
 void Spectral::setSysCurve(uint InitChannel){
     SysChannel = InitChannel;
 }

@@ -14,14 +14,17 @@ public:
     void ReceiveCount(const uint Channel);
     const QVector <QPointF> PointOutput(bool isXlog = false, bool isYlog = false);
     void setSysCurve(uint InitChannel, uint64_t InitMax, uint64_t InitMin);
+    void setSysCurve(uint64_t InitMax, uint64_t InitMin);
     void setSysCurve(uint InitChannel);
 public:
     QString Element;
     uint NucleonNum;
+    bool isSystemCurve;
 private:
     uint64_t *CountingData;
     uint SysChannel;
-    bool isSystemCurve;
 };
+
+
 
 #endif // GDATABASE_H

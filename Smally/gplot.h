@@ -2,8 +2,12 @@
 #define GPLOT_H
 
 #include <qwt_plot.h>
+#include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
+#include <qwt_symbol.h>
+#include <QtGui>
 #include "gsetting.h"
+#include "gdatabase.h"
 
 class OverallPlot: public QwtPlot
 {
@@ -11,8 +15,12 @@ class OverallPlot: public QwtPlot
 public:
     explicit OverallPlot(QWidget *parent);
     ~OverallPlot();
+    void AddCouningCurve(const Spectral *SpectralData);
 private:
     void InitCanvas();
+    void AddSysCurve();
+private:
+    QVector <QwtPlotCurve> *CurveGroup;
 
 };
 

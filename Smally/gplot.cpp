@@ -3,12 +3,13 @@
 OverallPlot::OverallPlot(QWidget *parent):
     QwtPlot(parent)
 {
+    CurveGroup = new QVector <QwtPlotCurve>;
     InitCanvas();
 }
 
 OverallPlot::~OverallPlot()
 {
-
+    delete CurveGroup;
 }
 
 void OverallPlot::InitCanvas()
@@ -28,4 +29,16 @@ void OverallPlot::InitCanvas()
     setAxisScale(QwtPlot::yLeft  , 0.0, OverallYIniMax);
     setAxisScale(QwtPlot::xBottom, 0.0, ChannelNum - 1);
     //setAutoReplot(true);
+}
+
+void OverallPlot::AddCouningCurve(const Spectral *SpectralData)
+{
+    QwtPlotCurve *CurveBuffer = new QwtPlotCurve(
+                SpectralData->Element.arg(CurveGroup->count()));
+    //Set curve color
+    CurveBuffer->setPen(Qt::yellow, 2);
+    QwtSymbol *SymbolBuf =
+            new QwtSymbol(QwtSymbol::Ellipse,QBrush(Qt::yellow),
+                          QPen(Qt::red, 2), QSize(6, 6));
+    CurveBuffer->setSymbol(SymbolBuf);
 }
