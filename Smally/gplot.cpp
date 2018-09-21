@@ -45,7 +45,7 @@ void OverallPlot::InitCanvas()
     //Set Axes
     setAxisScale(QwtPlot::yLeft  , 0.0, OverallYIniMax);
     setAxisScale(QwtPlot::xBottom, 0.0, ChannelNum - 1);
-    //setAutoReplot(true);
+    setAutoReplot(true);
 }
 
 void OverallPlot::AddMainCurve()
@@ -54,10 +54,15 @@ void OverallPlot::AddMainCurve()
     //Set curve color
     MainCurve->setPen(Qt::yellow, 2);
     //Set sample dot color
+    /*
     QwtSymbol *SymbolBuf =
             new QwtSymbol(QwtSymbol::Ellipse,QBrush(Qt::yellow),
-                          QPen(Qt::red, 2), QSize(6, 6));
+                          QPen(Qt::red, 2), QSize(2, 2));
     MainCurve->setSymbol(SymbolBuf);
+    */
+    MainCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
+    MainCurve->setLegendAttribute(QwtPlotCurve::LegendShowBrush);
+    MainCurve->setStyle(QwtPlotCurve::Dots);
     MainCurve->setSamples(InitMainX, InitMainY, ChannelNum);
     MainCurve->attach(this);
 }
@@ -69,6 +74,8 @@ void OverallPlot::AddSysCurve()
     SysCurve[1].setPen(Qt::red,  2);
     SysCurve[0].setSamples(SysCurveXmin, SysCurveY, 2);
     SysCurve[1].setSamples(SysCurveXmax, SysCurveY, 2);
+    SysCurve[0].setStyle(QwtPlotCurve::Lines);
+    SysCurve[1].setStyle(QwtPlotCurve::Lines);
     SysCurve[0].attach(this);
     SysCurve[1].attach(this);
 }
