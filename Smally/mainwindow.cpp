@@ -11,9 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     SmallyOverallPlot = new OverallPlot(this);
     ui->MainLay->addWidget(SmallyOverallPlot);
 
-    Sleep(1000);                                    //To show splash screen
-    Spectral F;
-    F.ReceiveCount(2055);
+    Sleep(500);                                    //To show splash screen
 }
 
 MainWindow::~MainWindow()

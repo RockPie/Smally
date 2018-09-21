@@ -15,12 +15,20 @@ class OverallPlot: public QwtPlot
 public:
     explicit OverallPlot(QWidget *parent);
     ~OverallPlot();
-    void AddCouningCurve(const Spectral *SpectralData);
 private:
     void InitCanvas();
     void AddSysCurve();
+    void AddMainCurve();
 private:
     QVector <QwtPlotCurve> *CurveGroup;
+    QwtPlotCurve *MainCurve;
+    QwtPlotCurve *SysCurve;
+    uint64_t *Limits;
+    double SysCurveY[2];
+    double SysCurveXmax[2];
+    double SysCurveXmin[2];
+    double InitMainX[ChannelNum];
+    double InitMainY[ChannelNum];
 
 };
 

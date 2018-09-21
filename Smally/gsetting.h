@@ -4,6 +4,9 @@
 //#define uint unsigned int
 
 #define ChannelNum 1024
-#define OverallYIniMax 100
+#define OverallYIniMax 1000
 
+#define OAMinLinePos 0
+#define OAMaxLinePos 1
+#define OAInitialVal 0
 #endif // GSETTING_H
