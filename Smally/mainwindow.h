@@ -5,6 +5,7 @@
 #include <QtGui>
 #include <windows.h>
 #include "gplot.h"
+#include "gdatabase.h"
 
 namespace Ui {
 class MainWindow;
