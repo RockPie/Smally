@@ -9,4 +9,5 @@
 #define OAMinLinePos 0
 #define OAMaxLinePos 1
 #define OAInitialVal 0
+
 #endif // GSETTING_H

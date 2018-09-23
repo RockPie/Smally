@@ -37,13 +37,15 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     gplot.cpp \
-    gdatabase.cpp
+    gdatabase.cpp \
+    gcomponent.cpp
 
 HEADERS += \
         mainwindow.h \
     gplot.h \
     gsetting.h \
-    gdatabase.h
+    gdatabase.h \
+    gcomponent.h
 
 FORMS += \
         mainwindow.ui

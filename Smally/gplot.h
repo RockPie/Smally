@@ -14,7 +14,8 @@ class OverallPlot: public QwtPlot
 public:
     explicit OverallPlot(QWidget *parent);
     ~OverallPlot();
-    void OADataReceive(const QVector<QPointF> OAdata);
+    void OADataReceive(
+            const QVector<QPointF> OAdata);
 private:
     void InitCanvas();
     void AddSysCurve();

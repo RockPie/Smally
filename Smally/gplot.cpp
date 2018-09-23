@@ -6,8 +6,8 @@ OverallPlot::OverallPlot(QWidget *parent):
     Limits = new uint64_t[2];
     Limits[0] = uint64_t(0);
     Limits[1] = uint64_t(OverallYIniMax);
-    SysCurveY[0] = double(Limits[0]) - double(Limits[1]) * 0.2;
-    SysCurveY[1] = 1.2 * double(Limits[1]);
+    SysCurveY[0] = double(Limits[0]) - double(Limits[1]) * 1.1;
+    SysCurveY[1] = 2.1 * double(Limits[1]);
     SysCurveXmin[0] = OAMinLinePos;
     SysCurveXmin[1] = OAMinLinePos;
     SysCurveXmax[0] = OAMaxLinePos;
@@ -43,9 +43,12 @@ void OverallPlot::InitCanvas()
     OverallGrid->setMajorPen(QPen(Qt::white, 0, Qt::DotLine));
     OverallGrid->setMinorPen(QPen(Qt::gray,  0, Qt::DotLine));
     OverallGrid->attach(this);
-    //Set Axes
+    //Set axis
     setAxisScale(QwtPlot::yLeft  , 0.0, OverallYIniMax);
     setAxisScale(QwtPlot::xBottom, 0.0, ChannelNum - 1);
+    //Set auto scale
+    //setAxisAutoScale(QwtPlot::yLeft, true);
+    enableAxis(false);
     setAutoReplot(true);
 }
 
@@ -91,7 +94,8 @@ void OverallPlot::OADataReceive(
             MaxVal = uint64_t(OAdata[counter].y());
     if(MaxVal > uint64_t(0.9 * axisInterval(QwtPlot::yLeft).maxValue()))
     {
-        SysCurveY[1] = double(MaxVal) * 1.2;
+        SysCurveY[0] = double(MaxVal) * (-1.1);
+        SysCurveY[1] = double(MaxVal) * 2.1;
         setAxisScale(QwtPlot::yLeft  , 0.0,
                      1.5 * axisInterval(QwtPlot::yLeft).maxValue());
     }
