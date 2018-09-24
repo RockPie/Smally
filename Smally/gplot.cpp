@@ -46,9 +46,11 @@ void OverallPlot::InitCanvas()
     //Set axis
     setAxisScale(QwtPlot::yLeft  , 0.0, OverallYIniMax);
     setAxisScale(QwtPlot::xBottom, 0.0, ChannelNum - 1);
+    //Disable axis display
+    enableAxis(QwtPlot::yLeft, false);
+    enableAxis(QwtPlot::xBottom, false);
     //Set auto scale
     //setAxisAutoScale(QwtPlot::yLeft, true);
-    enableAxis(false);
     setAutoReplot(true);
 }
 
