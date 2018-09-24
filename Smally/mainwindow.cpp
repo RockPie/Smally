@@ -10,7 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     resize(600,450);
     SmallyOverallPlot = new OverallPlot(this);
     ui->MainLay->addWidget(SmallyOverallPlot);
-    //Sleep(500);                                    //To show splash screen
+    ui->MainLay->addWidget(SmallyOverallPlot->OASlider);
+    //Sleep(500);   //To show splash screen
 }
 
 MainWindow::~MainWindow()

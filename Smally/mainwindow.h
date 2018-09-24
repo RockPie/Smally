@@ -6,6 +6,7 @@
 #include <windows.h>
 #include "gplot.h"
 #include "gdatabase.h"
+#include "gcomponent.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,6 +23,7 @@ public:
 private:
     Ui::MainWindow *ui;
     OverallPlot *SmallyOverallPlot;
+
 };
 
 #endif // MAINWINDOW_H

@@ -17,14 +17,20 @@ OverallPlot::OverallPlot(QWidget *parent):
         InitMainX[counter] = counter;
         InitMainY[counter] = 0;
     }
+    OASlider = new DoubleSlider(parent);    //Creat double slider
     InitCanvas();
     AddSysCurve();
     AddMainCurve();
+    connect(OASlider,           &DoubleSlider::maxValueChanged,
+            this,               &OverallPlot::MaxSysChange);
+    connect(OASlider,           &DoubleSlider::minValueChanged,
+            this,               &OverallPlot::MinSysChange);
     qDebug()<<"Main Plot Initialized";
 }
 
 OverallPlot::~OverallPlot()
 {
+    delete OASlider;
     delete MainCurve;
     delete []SysCurve;
     delete []Limits;
@@ -101,8 +107,20 @@ void OverallPlot::OADataReceive(
         setAxisScale(QwtPlot::yLeft  , 0.0,
                      1.5 * axisInterval(QwtPlot::yLeft).maxValue());
     }
-    SysCurve[0].setSamples(SysCurveXmin, SysCurveY, 2);
-    SysCurve[1].setSamples(SysCurveXmax, SysCurveY, 2);
-    replot();
+    SysCurveRefresh();
+}
+
+void OverallPlot::MinSysChange(double val)
+{
+    SysCurveXmin[0] = val;
+    SysCurveXmin[1] = val;
+    SysCurveRefresh();
+}
+
+void OverallPlot::MaxSysChange(double val)
+{
+    SysCurveXmax[0] = val;
+    SysCurveXmax[1] = val;
+    SysCurveRefresh();
 }
 
