@@ -16,13 +16,12 @@ public:
     void setRange(double min, double max);
     void setSingleStep(double step);
 
-    enum State{MinHandle = 0, MaxHandle, None};
-
     inline double minValue() const;
     inline double maxValue() const;
-
     inline double minRange() const;
     inline double maxRange() const;
+
+    enum State{MinHandle, MaxHandle, None};
 
 public slots:
     void setLabel(const QString& label);
@@ -66,7 +65,7 @@ inline double getValidValue(double val, double min, double max)
     return std::min(tmp, max);
 }
 
-void inline DoubleSlider::paintColoredRect(
+inline void DoubleSlider::paintColoredRect(
         QRect rect, QColor color ,QPainter* painter){
     painter->fillRect(rect,QBrush(color));
 }

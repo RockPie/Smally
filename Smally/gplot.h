@@ -34,6 +34,7 @@ private:
     double SysCurveXmin[2];
     double InitMainX[ChannelNum];
     double InitMainY[ChannelNum];
+
     inline void SysCurveRefresh();
 
 private slots:

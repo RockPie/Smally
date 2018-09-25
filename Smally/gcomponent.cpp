@@ -9,7 +9,7 @@ DoubleSlider::DoubleSlider(QWidget* parent)
     , m_maxValue(double(ChannelNum))
     , m_state(None)
 {
-    setFixedHeight(50);
+    setFixedHeight(40);
     setFocusPolicy(Qt::StrongFocus);
 }
 
@@ -24,7 +24,7 @@ void DoubleSlider::paintValueLabel(QPainter* painter)
 {
     painter->setBrush(Qt::NoBrush);
     painter->setPen(Qt::black);
-    painter->setFont(QFont("Arial",12));
+    painter->setFont(QFont("Arial", 10));
 
     QString minValueString = QString::number(m_minValue,'f',2);
     QString maxValueString = QString::number(m_maxValue,'f',2);
