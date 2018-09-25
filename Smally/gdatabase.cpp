@@ -1,11 +1,12 @@
 #include "gdatabase.h"
 
-Spectral::Spectral(const QString ele, const uint nucnum)
+Spectral::Spectral(QWidget* parent, const QString ele,
+                   const uint nucnum):
+    QWidget(parent)
 {
     Element = ele;
     NucleonNum = nucnum;
     CountingData = new uint64_t[ChannelNum];
-    isSystemCurve = false;
 }
 
 Spectral::~Spectral()
@@ -15,61 +16,68 @@ Spectral::~Spectral()
 
 //Output all counting info into QVector
 //For QwtPlotCurve::setSamples(const QVector< QPointF > &samples)
-QVector <QPointF> Spectral::PointOutput(
+QVector <QPointF> Spectral::PointOAOutput(
         bool isXlog, bool isYlog) const
 {
-    if(!isSystemCurve)
-    {
-        QVector <QPointF> res(ChannelNum);
-        if(isXlog == false && isYlog == false)
-            for(int counter = 0; counter < ChannelNum; counter++)
-            {
-                res[counter].setX(counter);
-                res[counter].setY(CountingData[counter]);
-            }
-        else if(isXlog == true && isYlog == false)
-            for(int counter = 0; counter < ChannelNum; counter++)
-            {
-                res[counter].setX(double(20)*(qLn(double(counter))));
-                res[counter].setY(CountingData[counter]);
-            }
-        else if(isXlog == false && isYlog == true)
-            for(int counter = 0; counter < ChannelNum; counter++)
-            {
-                res[counter].setX(counter);
-                res[counter].setY(double(20)*(qLn(double(CountingData[counter]))));
-            }
-        else
-            for(int counter = 0; counter < ChannelNum; counter++)
-            {
-                res[counter].setX(double(20)*(qLn(double(counter))));
-                res[counter].setY(double(20)*(qLn(double(CountingData[counter]))));
-            }
-        return res;
-    }
+    QVector <QPointF> res(ChannelNum);
+    if(isXlog == false && isYlog == false)
+        for(int counter = 0; counter < ChannelNum; counter++)
+        {
+            res[counter].setX(counter);
+            res[counter].setY(CountingData[counter]);
+        }
+    else if(isXlog == true && isYlog == false)
+        for(int counter = 0; counter < ChannelNum; counter++)
+        {
+            res[counter].setX(double(20)*(qLn(double(counter))));
+            res[counter].setY(CountingData[counter]);
+        }
+    else if(isXlog == false && isYlog == true)
+        for(int counter = 0; counter < ChannelNum; counter++)
+        {
+            res[counter].setX(counter);
+            res[counter].setY(double(20)*(qLn(double(CountingData[counter]))));
+        }
     else
-    {
-        QVector <QPointF> res(2);
-        if(isXlog == false)
+        for(int counter = 0; counter < ChannelNum; counter++)
         {
-            res[0].setX(SysChannel);
-            res[1].setX(SysChannel);
+            res[counter].setX(double(20)*(qLn(double(counter))));
+            res[counter].setY(double(20)*(qLn(double(CountingData[counter]))));
         }
-        else
+    return res;
+}
+
+QVector <QPointF> Spectral::PointPartOutput(
+        int StartPos, int Endpos, bool isXlog, bool isYlog) const
+{
+    QVector <QPointF> res(Endpos - StartPos + 1);
+    if(isXlog == false && isYlog == false)
+        for(int counter = StartPos - 1; counter < Endpos; counter++)
         {
-            res[0].setX(double(20)*(qLn(double(SysChannel))));
-            res[1].setX(double(20)*(qLn(double(SysChannel))));
+            res[counter  + 1 - StartPos].setX(counter);
+            res[counter  + 1 - StartPos].setY(CountingData[counter]);
         }
-        if(isYlog == false)
+    else if(isXlog == true && isYlog == false)
+        for(int counter = StartPos - 1; counter < Endpos; counter++)
         {
-            res[0].setY(CountingData[0]);
-            res[1].setY(CountingData[1]);
+            res[counter  + 1 - StartPos].
+                    setX(double(20)*(qLn(double(counter))));
+            res[counter  + 1 - StartPos].setY(CountingData[counter]);
         }
-        else
+    else if(isXlog == false && isYlog == true)
+        for(int counter = StartPos - 1; counter < Endpos; counter++)
         {
-            res[0].setY(double(20)*(qLn(double(CountingData[0]))));
-            res[1].setY(double(20)*(qLn(double(CountingData[1]))));
+            res[counter  + 1 - StartPos].setX(counter);
+            res[counter  + 1 - StartPos].
+                    setY(double(20)*(qLn(double(CountingData[counter]))));
         }
-        return res;
-    }
+    else
+        for(int counter = StartPos - 1; counter < Endpos; counter++)
+        {
+            res[counter  + 1 - StartPos].
+                    setX(double(20)*(qLn(double(counter))));
+            res[counter  + 1 - StartPos].
+                    setY(double(20)*(qLn(double(CountingData[counter]))));
+        }
+    return res;
 }

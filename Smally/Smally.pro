@@ -38,14 +38,16 @@ SOURCES += \
         mainwindow.cpp \
     gplot.cpp \
     gdatabase.cpp \
-    gcomponent.cpp
+    gcomponent.cpp \
+    gthread.cpp
 
 HEADERS += \
         mainwindow.h \
     gplot.h \
     gsetting.h \
     gdatabase.h \
-    gcomponent.h
+    gcomponent.h \
+    gthread.h
 
 FORMS += \
         mainwindow.ui

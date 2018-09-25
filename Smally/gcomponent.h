@@ -13,6 +13,7 @@ class DoubleSlider : public QWidget
     Q_OBJECT
 public:
     explicit DoubleSlider(QWidget* parent);
+    ~DoubleSlider();
     void setRange(double min, double max);
     void setSingleStep(double step);
 
@@ -85,6 +86,7 @@ inline double DoubleSlider::maxValue() const{
 inline double DoubleSlider::minValue() const{
     return m_minValue;
 }
+
 
 
 #endif // GPCOMPONENT_H

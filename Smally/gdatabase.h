@@ -3,33 +3,29 @@
 
 #include "gsetting.h"
 #include <QtGui>
+#include <QWidget>
 #include <QtCore/qmath.h>
-#include <QDebug>
 
-class Spectral
+class Spectral: public QWidget
 {
+    Q_OBJECT
 public:
-    Spectral(const QString ele = QString(),
+    Spectral(QWidget* parent, const QString ele = QString(),
              const uint nucnum = 0);
     ~Spectral();
     inline void ReceiveCount(const uint Channel);
-    QVector <QPointF> PointOutput(
+    QVector <QPointF> PointOAOutput(
             bool isXlog = false, bool isYlog = false) const;
-    inline void setSysCurve(uint InitChannel,
-                            uint64_t InitMax,
-                            uint64_t InitMin);
-    inline void setSysCurve(uint64_t InitMax,
-                            uint64_t InitMin);
-    inline void setSysCurve(uint InitChannel);
+    QVector <QPointF> PointPartOutput(
+            int StartPos, int Endpos,
+            bool isXlog = false, bool isYlog = false) const;
 
 public:
     QString Element;
     uint NucleonNum;
-    bool isSystemCurve;
 
 private:
     uint64_t *CountingData;
-    uint SysChannel;
 };
 
 //Receive one signal
@@ -40,25 +36,6 @@ inline void Spectral::ReceiveCount(const uint Channel)
     else
         qDebug()<<"Input count out of range\n"
                   "Incorrect count val ="<<Channel;
-}
-
-inline void Spectral::setSysCurve(uint InitChannel,
-                           uint64_t InitMax, uint64_t InitMin)
-{
-    isSystemCurve = true;
-    CountingData[0] = InitMin;
-    CountingData[1] = InitMax;
-    SysChannel = InitChannel;
-}
-
-inline void Spectral::setSysCurve(uint64_t InitMax, uint64_t InitMin)
-{
-    CountingData[0] = InitMin;
-    CountingData[1] = InitMax;
-}
-
-inline void Spectral::setSysCurve(uint InitChannel){
-    SysChannel = InitChannel;
 }
 
 

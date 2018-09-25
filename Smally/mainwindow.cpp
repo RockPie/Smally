@@ -9,6 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowTitle("Smally");
     resize(600,450);
     SmallyOverallPlot = new OverallPlot(this);
+
+    //Set size policy
     QSizePolicy OAPlotPolicy = SmallyOverallPlot->sizePolicy();
     QSizePolicy LeftToolPolicy = ui->LeftTool->sizePolicy();
     OAPlotPolicy.setHorizontalPolicy(QSizePolicy::Expanding);
@@ -22,10 +24,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QSplitterHandle *handle = ui->splitter->handle(2);
     if(handle)
         handle->setFixedHeight(1);
+
     //Set size of Left, Mid and Right layout
     ui->splitter->setStretchFactor(0,1);
     ui->splitter->setStretchFactor(1,4);
     ui->splitter->setStretchFactor(2,1);
+
     //Add component to widget
     ui->MidLay->addWidget(SmallyOverallPlot->OASlider);
     ui->MidLay->addWidget(SmallyOverallPlot);
@@ -35,5 +39,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete SmallyOverallPlot;
     delete ui;
 }

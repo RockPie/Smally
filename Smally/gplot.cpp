@@ -30,9 +30,9 @@ OverallPlot::OverallPlot(QWidget *parent):
 
 OverallPlot::~OverallPlot()
 {
-    delete OASlider;
     delete MainCurve;
     delete []SysCurve;
+    delete OASlider;
     delete []Limits;
 }
 
