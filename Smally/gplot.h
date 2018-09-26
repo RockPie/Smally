@@ -19,6 +19,9 @@ public:
             const QVector<QPointF> OAdata);
     DoubleSlider *OASlider;
 
+public slots:
+    void setDotDisplay(bool isDot);
+
 private:
     void InitCanvas();
     void AddSysCurve();

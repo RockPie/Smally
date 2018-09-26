@@ -8,7 +8,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setWindowTitle("Smally");
     resize(600,450);
+    SmallySpectral    = new Spectral(this);
     SmallyOverallPlot = new OverallPlot(this);
+    SmallyMainThread  = new TimeThread(this);
 
     //Set size policy
     QSizePolicy OAPlotPolicy = SmallyOverallPlot->sizePolicy();
@@ -19,7 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->LeftTool->setSizePolicy(LeftToolPolicy);
 
     //Set splitter line style
-    ui->splitter->setStyleSheet("QSplitter::handle{background-color:gray}");
+    ui->splitter->setStyleSheet(
+                "QSplitter::handle{background-color:gray}");
     ui->splitter->setHandleWidth(1);
     QSplitterHandle *handle = ui->splitter->handle(2);
     if(handle)
@@ -34,11 +37,20 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->MidLay->addWidget(SmallyOverallPlot->OASlider);
     ui->MidLay->addWidget(SmallyOverallPlot);
     qDebug()<<"Mainwindow Created";
+
+    /***Connect Slots and Signals***/
+    connect(ui->DotBox,         &QCheckBox::clicked,
+            SmallyOverallPlot,  &OverallPlot::setDotDisplay);
+    connect(ui->ThreadBox,      &QCheckBox::clicked,
+            SmallyMainThread,   &TimeThread::setTimeThread);
+
     //Sleep(500);   //To show splash screen
 }
 
 MainWindow::~MainWindow()
 {
+    delete SmallyMainThread;
     delete SmallyOverallPlot;
+    delete SmallySpectral;
     delete ui;
 }

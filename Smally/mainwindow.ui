@@ -47,7 +47,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>332</width>
+             <width>545</width>
              <height>457</height>
             </rect>
            </property>
@@ -121,7 +121,7 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_5">
               <item>
-               <widget class="QCheckBox" name="checkBox_3">
+               <widget class="QCheckBox" name="DotBox">
                 <property name="text">
                  <string>点状显示(Show Dots)</string>
                 </property>
@@ -136,7 +136,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>332</width>
+             <width>545</width>
              <height>457</height>
             </rect>
            </property>
@@ -172,9 +172,16 @@
        </layout>
       </widget>
       <widget class="QWidget" name="verticalLayoutWidget">
-       <layout class="QVBoxLayout" name="RightLay" stretch="0">
+       <layout class="QVBoxLayout" name="RightLay" stretch="0,0">
         <item>
          <widget class="QLCDNumber" name="lcdNumber"/>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="ThreadBox">
+          <property name="text">
+           <string>开启时间线程</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>

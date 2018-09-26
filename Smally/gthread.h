@@ -10,10 +10,23 @@ public:
     explicit TimeThread(QObject *parent);
     ~TimeThread();
 
-    void runTThread();
+public slots:
+    void TimeoutHandle();
+    void setTimeThread(bool startThread);
+
+protected:
+    void run();
+    inline void stop();
 
 private:
     QTimer *MainTimer;
+    volatile uint64_t TimerCounter;
+
+signals:
+    void Timeoutms();
+    void Timeout10ms();
+    void Timeout50ms();
+    void Timeout100ms();
 
 };
 

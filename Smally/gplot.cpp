@@ -74,7 +74,7 @@ void OverallPlot::AddMainCurve()
     */
     MainCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
     MainCurve->setLegendAttribute(QwtPlotCurve::LegendShowBrush);
-    MainCurve->setStyle(QwtPlotCurve::Dots);
+    MainCurve->setStyle(QwtPlotCurve::Lines);
     MainCurve->setSamples(InitMainX, InitMainY, ChannelNum);
     MainCurve->attach(this);
 }
@@ -122,5 +122,13 @@ void OverallPlot::MaxSysChange(double val)
     SysCurveXmax[0] = val;
     SysCurveXmax[1] = val;
     SysCurveRefresh();
+}
+
+void OverallPlot::setDotDisplay(bool isDot)
+{
+    if(isDot)
+        MainCurve->setStyle(QwtPlotCurve::Dots);
+    else
+        MainCurve->setStyle(QwtPlotCurve::Lines);
 }
 

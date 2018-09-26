@@ -7,6 +7,7 @@
 #include "gplot.h"
 #include "gdatabase.h"
 #include "gcomponent.h"
+#include "gthread.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,7 +23,10 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    Spectral *SmallySpectral;
     OverallPlot *SmallyOverallPlot;
+    TimeThread *SmallyMainThread;
+
 
 };
 
