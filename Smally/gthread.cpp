@@ -13,7 +13,8 @@ TimeThread::~TimeThread()
 void TimeThread::run()
 {
     MainTimer = new QTimer();
-    MainTimer->setInterval(10);
+    TimerCounter = 0;
+    MainTimer->setInterval(1);
     MainTimer->start();
     connect(MainTimer,      &QTimer::timeout,
             this,           &TimeThread::TimeoutHandle);
@@ -22,8 +23,18 @@ void TimeThread::run()
 
 void TimeThread::TimeoutHandle()
 {
-    qDebug()<<"Timeout Event";
-    emit msecTimeout();
+    //qDebug()<<"Timeout Event"<<TimerCounter;
+    if(TimerCounter >= 500)
+        TimerCounter = 0;
+    else
+        TimerCounter++;
+    emit Timeoutms();
+    if(!TimerCounter % 100)
+        emit Timeout100ms();
+    if(!TimerCounter % 50)
+        emit Timeout50ms();
+    if(!TimerCounter % 10)
+        emit Timeout10ms();
     //MainTimer->stop();
 }
 

@@ -43,6 +43,8 @@ MainWindow::MainWindow(QWidget *parent) :
             SmallyOverallPlot,  &OverallPlot::setDotDisplay);
     connect(ui->ThreadBox,      &QCheckBox::clicked,
             SmallyMainThread,   &TimeThread::setTimeThread);
+    connect(SmallyMainThread,   &TimeThread::Timeout50ms,
+            this,               &MainWindow::showSpectral);
 
     //Sleep(500);   //To show splash screen
 }
@@ -53,4 +55,10 @@ MainWindow::~MainWindow()
     delete SmallyOverallPlot;
     delete SmallySpectral;
     delete ui;
+}
+
+void MainWindow::showSpectral(){
+    SmallyOverallPlot->OADataReceive(
+                SmallySpectral->PointOAOutput());
+    qDebug()<<"Updated";
 }

@@ -20,7 +20,7 @@ protected:
 
 private:
     QTimer *MainTimer;
-    volatile uint64_t TimerCounter;
+    volatile int TimerCounter;
 
 signals:
     void Timeoutms();

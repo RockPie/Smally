@@ -7,6 +7,8 @@ Spectral::Spectral(QWidget* parent, const QString ele,
     Element = ele;
     NucleonNum = nucnum;
     CountingData = new uint64_t[ChannelNum];
+    for(int counter = 0; counter < ChannelNum; counter++)
+        CountingData[counter] = 0;
 }
 
 Spectral::~Spectral()

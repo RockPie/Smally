@@ -27,6 +27,9 @@ private:
     OverallPlot *SmallyOverallPlot;
     TimeThread *SmallyMainThread;
 
+private slots:
+    void showSpectral();
+
 
 };
 
