@@ -18,6 +18,7 @@ OverallPlot::OverallPlot(QWidget *parent):
         InitMainY[counter] = 0;
     }
     OASlider = new DoubleSlider(parent);    //Creat double slider
+    AttachedPlot = new PartPlot(parent);
     InitCanvas();
     AddSysCurve();
     AddMainCurve();
@@ -96,6 +97,7 @@ void OverallPlot::OADataReceive(
         const QVector <QPointF> OAdata)
 {
     MainCurve->setSamples(OAdata);
+    AttachedPlot->setPPData(OAdata);
     uint64_t MaxVal = uint64_t(OAdata[0].y());
     for(int counter = 1; counter < OAdata.length(); counter++)
         if(MaxVal < uint64_t(OAdata[counter].y()))
@@ -115,6 +117,8 @@ void OverallPlot::MinSysChange(double val)
     SysCurveXmin[0] = val;
     SysCurveXmin[1] = val;
     SysCurveRefresh();
+    AttachedPlot->setAxisScale(QwtPlot::xBottom, val,
+                               axisInterval(QwtPlot::yLeft).maxValue());
 }
 
 void OverallPlot::MaxSysChange(double val)
@@ -122,13 +126,77 @@ void OverallPlot::MaxSysChange(double val)
     SysCurveXmax[0] = val;
     SysCurveXmax[1] = val;
     SysCurveRefresh();
+    AttachedPlot->setAxisScale(QwtPlot::xBottom,
+                               axisInterval(QwtPlot::yLeft).minValue(), val);
 }
 
 void OverallPlot::setDotDisplay(bool isDot)
 {
     if(isDot)
+    {
         MainCurve->setStyle(QwtPlotCurve::Dots);
+        AttachedPlot->setPPDots();
+    }
     else
+    {
         MainCurve->setStyle(QwtPlotCurve::Lines);
+        AttachedPlot->setPPLines();
+    }
 }
 
+PartPlot::PartPlot(QWidget *parent):
+    QwtPlot(parent)
+{
+    for(int counter = 0; counter < ChannelNum; counter++)
+    {
+        InitPartX[counter] = counter;
+        InitPartY[counter] = 0;
+    }
+    InitCanvas();
+    AddPartCurve();
+}
+
+PartPlot::~PartPlot(){}
+
+void PartPlot::InitCanvas()
+{
+    //Set background color
+    this->canvas()->setPalette(QPalette(QColor(Qt::black)));
+    setAutoFillBackground(true);
+    //Set grid
+    QwtPlotGrid  *PartGrid = new QwtPlotGrid;
+    PartGrid->enableXMin(true);
+    PartGrid->enableYMin(true);
+    //Grid style
+    PartGrid->setMajorPen(QPen(Qt::white, 0, Qt::DotLine));
+    PartGrid->setMinorPen(QPen(Qt::gray,  0, Qt::DotLine));
+    PartGrid->attach(this);
+    //Set axis
+    setAxisScale(QwtPlot::yLeft  , 0.0, OverallYIniMax);
+    setAxisScale(QwtPlot::xBottom, 0.0, ChannelNum - 1);
+    //Disable axis display
+    enableAxis(QwtPlot::yLeft, false);
+    enableAxis(QwtPlot::xBottom, false);
+    //Set auto scale
+    //setAxisAutoScale(QwtPlot::yLeft, true);
+    setAutoReplot(true);
+}
+
+void PartPlot::AddPartCurve()
+{
+    PartCurve = new QwtPlotCurve;
+    //Set curve color
+    PartCurve->setPen(Qt::yellow, 2);
+    //Set sample dot color
+    /*
+    QwtSymbol *SymbolBuf =
+            new QwtSymbol(QwtSymbol::Ellipse,QBrush(Qt::yellow),
+                          QPen(Qt::red, 2), QSize(2, 2));
+    MainCurve->setSymbol(SymbolBuf);
+    */
+    PartCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
+    PartCurve->setLegendAttribute(QwtPlotCurve::LegendShowBrush);
+    PartCurve->setStyle(QwtPlotCurve::Lines);
+    PartCurve->setSamples(InitPartX, InitPartY, ChannelNum);
+    PartCurve->attach(this);
+}

@@ -9,6 +9,40 @@
 #include "gsetting.h"
 #include "gcomponent.h"
 
+class PartPlot: public QwtPlot
+{
+    Q_OBJECT
+public:
+    explicit PartPlot(QWidget *parent);
+    ~PartPlot();
+    void PartDataReceive(
+            const QVector<QPointF> OAdata);
+    inline void setPPDots();
+    inline void setPPLines();
+    inline void setPPData(QVector <QPointF> input);
+
+private:
+    void InitCanvas();
+    void AddPartCurve();
+
+private:
+    QwtPlotCurve *PartCurve;
+    double InitPartX[ChannelNum];
+    double InitPartY[ChannelNum];
+};
+
+inline void PartPlot::setPPDots(){
+    PartCurve->setStyle(QwtPlotCurve::Dots);
+}
+
+inline void PartPlot::setPPLines(){
+    PartCurve->setStyle(QwtPlotCurve::Lines);
+}
+
+inline void PartPlot::setPPData(QVector <QPointF> input){
+    PartCurve->setSamples(input);
+}
+
 class OverallPlot: public QwtPlot
 {
     Q_OBJECT
@@ -18,6 +52,7 @@ public:
     void OADataReceive(
             const QVector<QPointF> OAdata);
     DoubleSlider *OASlider;
+        PartPlot *AttachedPlot;
 
 public slots:
     void setDotDisplay(bool isDot);
@@ -28,7 +63,6 @@ private:
     void AddMainCurve();
 
 private:
-    QVector <QwtPlotCurve> *CurveGroup;
     QwtPlotCurve *MainCurve;
     QwtPlotCurve *SysCurve;
     uint64_t *Limits;
@@ -37,6 +71,7 @@ private:
     double SysCurveXmin[2];
     double InitMainX[ChannelNum];
     double InitMainY[ChannelNum];
+
 
     inline void SysCurveRefresh();
 
@@ -49,7 +84,9 @@ inline void OverallPlot::SysCurveRefresh()
 {
     SysCurve[0].setSamples(SysCurveXmin, SysCurveY, 2);
     SysCurve[1].setSamples(SysCurveXmax, SysCurveY, 2);
-    replot();
+    this->replot();
 }
+
+
 
 #endif // GPLOT_H

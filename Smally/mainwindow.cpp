@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("Smally");
-    resize(600,450);
+    resize(800, 600);
     SmallySpectral    = new Spectral(this);
     SmallyOverallPlot = new OverallPlot(this);
     SmallyMainThread  = new TimeThread(this);
@@ -36,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //Add component to widget
     ui->MidLay->addWidget(SmallyOverallPlot->OASlider);
     ui->MidLay->addWidget(SmallyOverallPlot);
+    ui->MidLay->addWidget(SmallyOverallPlot->AttachedPlot);
     qDebug()<<"Mainwindow Created";
 
     /***Connect Slots and Signals***/
