@@ -6,6 +6,7 @@
 #include <qwt_plot_grid.h>
 #include <qwt_symbol.h>
 #include <QtGui>
+#include <QtCore/qmath.h>
 #include "gsetting.h"
 #include "gcomponent.h"
 
@@ -59,7 +60,8 @@ public slots:
     void setDotDisplay(bool isDot);
     void MinSysChange(double val);
     void MaxSysChange(double val);
-    void setLogMode(bool isLog);
+    void setXLogMode(bool isLog);
+    void setYLogMode(bool isLog);
 
 private:
     void InitCanvas();
@@ -75,9 +77,10 @@ private:
     double SysCurveXmin[2];
     double InitMainX[ChannelNum];
     double InitMainY[ChannelNum];
+    const double LogChannel =
+            double(20) * qLn(double(ChannelNum));
 
     inline void SysCurveRefresh();
-
 };
 
 inline void OverallPlot::SysCurveRefresh()

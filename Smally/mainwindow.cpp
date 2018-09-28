@@ -54,10 +54,14 @@ MainWindow::MainWindow(QWidget *parent) :
     //Link logbox
     connect(ui->LogXBox,        &QCheckBox::clicked,
             this,               &MainWindow::setXLogAxis);
-    connect(ui->LogYBox,        &QCheckBox::clicked,
-            this,               &MainWindow::setYLogAxis);
+    connect(ui->LogXBox,        &QCheckBox::clicked,
+            SmallyOverallPlot,  &OverallPlot::setXLogMode);
     connect(ui->LogXBox,        &QCheckBox::clicked,
             this,               &MainWindow::showSpectral);
+    connect(ui->LogYBox,        &QCheckBox::clicked,
+            this,               &MainWindow::setYLogAxis);
+    connect(ui->LogYBox,        &QCheckBox::clicked,
+            SmallyOverallPlot,  &OverallPlot::setYLogMode);
     connect(ui->LogYBox,        &QCheckBox::clicked,
             this,               &MainWindow::showSpectral);
     //Link double slider
@@ -75,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
             ui->XminSpinBox,    &QDoubleSpinBox::setValue);
     qDebug()<<"Signals and slots connected";
 
-    ui->XmaxSpinBox->setValue(ChannelNum);
+    ui->XmaxSpinBox->setValue(ChannelNum - 1);
     ui->XminSpinBox->setValue(0);
     ui->LogXBox->setCheckState(Qt::Unchecked);
     ui->LogYBox->setCheckState(Qt::Unchecked);

@@ -31,20 +31,20 @@ QVector <QPointF> Spectral::PointOAOutput(
     else if(isXlog == true && isYlog == false)
         for(int counter = 0; counter < ChannelNum; counter++)
         {
-            res[counter].setX(double(20)*(qLn(double(counter))));
+            res[counter].setX(double(20)*(qLn(double(counter + 1))));
             res[counter].setY(CountingData[counter]);
         }
     else if(isXlog == false && isYlog == true)
         for(int counter = 0; counter < ChannelNum; counter++)
         {
             res[counter].setX(counter);
-            res[counter].setY(double(20)*(qLn(double(CountingData[counter]))));
+            res[counter].setY(double(20)*(qLn(double(CountingData[counter] + 1))));
         }
     else
         for(int counter = 0; counter < ChannelNum; counter++)
         {
-            res[counter].setX(double(20)*(qLn(double(counter))));
-            res[counter].setY(double(20)*(qLn(double(CountingData[counter]))));
+            res[counter].setX(double(20)*(qLn(double(counter + 1))));
+            res[counter].setY(double(20)*(qLn(double(CountingData[counter] + 1))));
         }
     return res;
 }
@@ -63,7 +63,7 @@ QVector <QPointF> Spectral::PointPartOutput(
         for(int counter = StartPos - 1; counter < Endpos; counter++)
         {
             res[counter  + 1 - StartPos].
-                    setX(double(20)*(qLn(double(counter))));
+                    setX(double(20)*(qLn(double(counter + 1))));
             res[counter  + 1 - StartPos].setY(CountingData[counter]);
         }
     else if(isXlog == false && isYlog == true)
@@ -71,15 +71,15 @@ QVector <QPointF> Spectral::PointPartOutput(
         {
             res[counter  + 1 - StartPos].setX(counter);
             res[counter  + 1 - StartPos].
-                    setY(double(20)*(qLn(double(CountingData[counter]))));
+                    setY(double(20)*(qLn(double(CountingData[counter] + 1))));
         }
     else
         for(int counter = StartPos - 1; counter < Endpos; counter++)
         {
             res[counter  + 1 - StartPos].
-                    setX(double(20)*(qLn(double(counter))));
+                    setX(double(20)*(qLn(double(counter + 1))));
             res[counter  + 1 - StartPos].
-                    setY(double(20)*(qLn(double(CountingData[counter]))));
+                    setY(double(20)*(qLn(double(CountingData[counter] + 1))));
         }
     return res;
 }

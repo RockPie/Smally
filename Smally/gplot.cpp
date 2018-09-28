@@ -123,7 +123,9 @@ void OverallPlot::MinSysChange(double val)
 
 void OverallPlot::MaxSysChange(double val)
 {
+    //qDebug()<<SysCurveXmax[0]<<"MaxChange1";
     SysCurveXmax[0] = val;
+    //qDebug()<<SysCurveXmax[0]<<"MaxChange2";
     SysCurveXmax[1] = val;
     SysCurveRefresh();
     AttachedPlot->setAxisScale(QwtPlot::xBottom,
@@ -144,7 +146,43 @@ void OverallPlot::setDotDisplay(bool isDot)
     }
 }
 
-void OverallPlot::setLogMode(bool isLog){}
+void OverallPlot::setXLogMode(bool isLog)
+{
+    if(isLog)
+    {
+        setAxisScale(QwtPlot::xBottom, 0.0, LogChannel);
+        MinSysChange(double(20) * qLn(SysCurveXmin[0] + 1));
+        MaxSysChange(double(20) * qLn(SysCurveXmax[0] + 1));
+        //The order of setting OASlider is important
+        OASlider->setSingleStep(0.01);
+        OASlider->setMinValue(SysCurveXmin[0]);
+        OASlider->setMaxValue(SysCurveXmax[0]);
+        OASlider->setRange(0, LogChannel);
+    }
+    else
+    {
+        setAxisScale(QwtPlot::xBottom, 0.0, ChannelNum - 1);
+        MinSysChange(double(qRound((exp(0.05 * SysCurveXmin[0])) - 1)));
+        MaxSysChange(double(qRound((exp(0.05 * SysCurveXmax[0])) - 1)));
+        OASlider->setSingleStep(1.0);
+        OASlider->setMinValue(SysCurveXmin[0]);
+        OASlider->setMaxValue(SysCurveXmax[0]);
+        OASlider->setRange(0, ChannelNum - 1);
+    }
+    SysCurveRefresh();
+}
+
+void OverallPlot::setYLogMode(bool isLog)
+{
+    if(isLog)
+        setAxisScale(QwtPlot::yLeft, 0.0,
+                     double(20) * (qLn(axisInterval(QwtPlot::yLeft)
+                                      .maxValue() + 1)));
+    else
+        setAxisScale(QwtPlot::yLeft, 0.0,
+                     double(qRound((exp(0.05 * axisInterval(QwtPlot::yLeft)
+                                        .maxValue())) - 1)));
+}
 
 PartPlot::PartPlot(QWidget *parent):
     QwtPlot(parent)

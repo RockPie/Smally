@@ -3,10 +3,10 @@
 DoubleSlider::DoubleSlider(QWidget* parent)
     : QWidget(parent)
     , m_min(double(0))
-    , m_max(double(ChannelNum))
+    , m_max(double(ChannelNum - 1))
     , m_singleStep(double(1.0))
     , m_minValue(double(0))
-    , m_maxValue(double(ChannelNum))
+    , m_maxValue(double(ChannelNum - 1))
     , m_state(None)
 {
     setFixedHeight(40);
@@ -38,7 +38,8 @@ void DoubleSlider::paintValueLabel(QPainter* painter)
 
     //---- paint text
     painter->drawText(QRectF(2,4,mintextWidth,textHeight),minValueString);
-    painter->drawText(QRectF(width() - maxtextWidth -2, 4, maxtextWidth,textHeight), maxValueString);
+    painter->drawText(QRectF(width() - maxtextWidth -2, 4,
+                             maxtextWidth,textHeight), maxValueString);
 
     //----- paint label
     painter->setFont(QFont("Arial",12));
@@ -52,7 +53,7 @@ void DoubleSlider::paintValueLabel(QPainter* painter)
 
 
     int minPos = int(( m_minValue - m_min ) * width() / (m_max - m_min));
-    int maxPos = int((m_maxValue - m_min ) * width() /  (m_max - m_min));
+    int maxPos = int(( m_maxValue - m_min ) * width() / (m_max - m_min));
 
     if(minPos <= 4){
         minPos = 4;
@@ -69,7 +70,8 @@ void DoubleSlider::paintValueLabel(QPainter* painter)
 
     //----- paint groove
     paintColoredRect(QRect(4,37,width() - 8,2),Qt::gray,painter);
-    paintColoredRect(QRect(minPos + 4,37,maxPos - minPos,2),QColor(51,153,155),painter);
+    paintColoredRect(QRect(minPos + 4,37,maxPos - minPos,2),
+                     QColor(51,153,155),painter);
 
     //----- handle
 
@@ -77,8 +79,10 @@ void DoubleSlider::paintValueLabel(QPainter* painter)
     maxHandleRegion = QRect(maxPos ,30,8,16);
 
     //-----paint Handle
-    QColor minColor  = (m_state == MinHandle) ? QColor(51,153,155) : Qt::darkGray;
-    QColor maxColor  = (m_state == MaxHandle) ? QColor(51,153,155) : Qt::darkGray;
+    QColor minColor  = (m_state == MinHandle) ?
+                QColor(34, 139, 34) : QColor(102, 205, 0);
+    QColor maxColor  = (m_state == MaxHandle) ?
+                QColor(178, 34, 34) : QColor(255, 0, 0);
     paintColoredRect(minHandleRegion,minColor,painter);
     paintColoredRect(maxHandleRegion,maxColor,painter);
 }
@@ -104,18 +108,24 @@ void DoubleSlider::setSingleStep(double step)
 
 void DoubleSlider::setMinValue(double val)
 {
-    if(fabs( m_minValue - val ) > 0.01 ){
-        m_minValue = val;
-        emit minValueChanged(val);
+    if(fabs( m_minValue - val ) >= m_singleStep ){
+        if(int(m_singleStep) == 1)
+            m_minValue = double(int(val));
+        else
+            m_minValue = val;
+        emit minValueChanged(m_minValue);
     }
     update();
 }
 
 void DoubleSlider::setMaxValue(double val)
 {
-    if(fabs(m_maxValue - val) > 0.01 ){
-        m_maxValue = val;
-        emit maxValueChanged(val);
+    if(fabs(m_maxValue - val) > m_singleStep ){
+        if(int(m_singleStep) == 1)
+            m_maxValue = double(int(val));
+        else
+            m_maxValue = val;
+        emit maxValueChanged(m_maxValue);
     }
     update();
 }
