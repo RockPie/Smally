@@ -104,18 +104,20 @@ void DoubleSlider::setSingleStep(double step)
 
 void DoubleSlider::setMinValue(double val)
 {
-    if(fabs( m_minValue - val ) > 0.0001 ){
+    if(fabs( m_minValue - val ) > 0.01 ){
         m_minValue = val;
         emit minValueChanged(val);
     }
+    update();
 }
 
 void DoubleSlider::setMaxValue(double val)
 {
-    if(fabs(m_maxValue - val) > 0.0001){
+    if(fabs(m_maxValue - val) > 0.01 ){
         m_maxValue = val;
         emit maxValueChanged(val);
     }
+    update();
 }
 
 void DoubleSlider::setLabel(const QString& label)

@@ -11,15 +11,17 @@ public:
     ~TimeThread();
 
 public slots:
-    void TimeoutHandle();
+    void MainTimeoutHandle();
+    void AccurateTimeoutHandle();
     void setTimeThread(bool startThread);
 
 protected:
-    void run();
-    inline void stop();
+    void runMain();
+    inline void stopMain();
 
 private:
     QTimer *MainTimer;
+    QTimer *AccurateTimer;
     volatile int TimerCounter;
 
 signals:

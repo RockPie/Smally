@@ -3,52 +3,61 @@
 TimeThread::TimeThread(QObject *parent):
     QThread(parent)
 {
+    //Initialize main timer (10ms +- 5% accuracy)
+    MainTimer = new QTimer();
+    MainTimer->setTimerType(Qt::CoarseTimer);
+    MainTimer->setInterval(10);
+    connect(MainTimer,      &QTimer::timeout,
+            this,           &TimeThread::MainTimeoutHandle);
+    //Initialize accurate timer (1ms accuracy)
+    AccurateTimer = new QTimer();
+    AccurateTimer->setTimerType(Qt::PreciseTimer);
+    AccurateTimer->setInterval(1);
+    connect(AccurateTimer,  &QTimer::timeout,
+            this,           &TimeThread::AccurateTimeoutHandle);
 }
 
 TimeThread::~TimeThread()
 {
-    stop();
+    delete AccurateTimer;
+    delete MainTimer;
 }
 
-void TimeThread::run()
+void TimeThread::runMain()
 {
-    MainTimer = new QTimer();
     TimerCounter = 0;
-    MainTimer->setInterval(1);
     MainTimer->start();
-    connect(MainTimer,      &QTimer::timeout,
-            this,           &TimeThread::TimeoutHandle);
     exec();
 }
 
-void TimeThread::TimeoutHandle()
+void TimeThread::MainTimeoutHandle()
 {
     //qDebug()<<"Timeout Event"<<TimerCounter;
     if(TimerCounter >= 500)
         TimerCounter = 0;
     else
         TimerCounter++;
-    emit Timeoutms();
-    if(!TimerCounter % 100)
-        emit Timeout100ms();
-    if(!TimerCounter % 50)
+    emit Timeout10ms();
+    if(TimerCounter % 5 == 0)
+    {
         emit Timeout50ms();
-    if(!TimerCounter % 10)
-        emit Timeout10ms();
-    //MainTimer->stop();
+        if(TimerCounter % 2 == 0)
+            emit Timeout100ms();
+    }
 }
 
-inline void TimeThread::stop()
-{
+inline void TimeThread::stopMain(){
     MainTimer->stop();
-    delete MainTimer;
 }
 
 void TimeThread::setTimeThread(bool startThread)
 {
     if(startThread)
-        this->run();
+        this->runMain();
     else
-        this->stop();
+        this->stopMain();
 }
 
+void TimeThread::AccurateTimeoutHandle(){
+    emit Timeoutms();
+}

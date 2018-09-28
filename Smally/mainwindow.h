@@ -27,8 +27,13 @@ private:
     OverallPlot *SmallyOverallPlot;
     TimeThread *SmallyMainThread;
 
+    bool flagYAxisLog;
+    bool flagXAxisLog;
+
 private slots:
     void showSpectral();
+    void setYLogAxis(bool isLog);
+    void setXLogAxis(bool isLog);
 
 
 };

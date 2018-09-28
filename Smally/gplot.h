@@ -51,11 +51,15 @@ public:
     ~OverallPlot();
     void OADataReceive(
             const QVector<QPointF> OAdata);
+
     DoubleSlider *OASlider;
-        PartPlot *AttachedPlot;
+    PartPlot *AttachedPlot;
 
 public slots:
     void setDotDisplay(bool isDot);
+    void MinSysChange(double val);
+    void MaxSysChange(double val);
+    void setLogMode(bool isLog);
 
 private:
     void InitCanvas();
@@ -72,12 +76,8 @@ private:
     double InitMainX[ChannelNum];
     double InitMainY[ChannelNum];
 
-
     inline void SysCurveRefresh();
 
-private slots:
-    void MinSysChange(double val);
-    void MaxSysChange(double val);
 };
 
 inline void OverallPlot::SysCurveRefresh()

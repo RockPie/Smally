@@ -7,7 +7,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("Smally");
-    resize(800, 600);
+    resize(800, 600);   //Set size of main widget
+    flagYAxisLog = false;
+    flagXAxisLog = false;
+
     SmallySpectral    = new Spectral(this);
     SmallyOverallPlot = new OverallPlot(this);
     SmallyMainThread  = new TimeThread(this);
@@ -42,10 +45,41 @@ MainWindow::MainWindow(QWidget *parent) :
     /***Connect Slots and Signals***/
     connect(ui->DotBox,         &QCheckBox::clicked,
             SmallyOverallPlot,  &OverallPlot::setDotDisplay);
+    connect(ui->DotBox,         &QCheckBox::clicked,
+            this,               &MainWindow::showSpectral);
     connect(ui->ThreadBox,      &QCheckBox::clicked,
             SmallyMainThread,   &TimeThread::setTimeThread);
-    connect(SmallyMainThread,   &TimeThread::Timeout50ms,
+    connect(SmallyMainThread,   &TimeThread::Timeout100ms,
             this,               &MainWindow::showSpectral);
+    //Link logbox
+    connect(ui->LogXBox,        &QCheckBox::clicked,
+            this,               &MainWindow::setXLogAxis);
+    connect(ui->LogYBox,        &QCheckBox::clicked,
+            this,               &MainWindow::setYLogAxis);
+    connect(ui->LogXBox,        &QCheckBox::clicked,
+            this,               &MainWindow::showSpectral);
+    connect(ui->LogYBox,        &QCheckBox::clicked,
+            this,               &MainWindow::showSpectral);
+    //Link double slider
+    connect(ui->XminSpinBox,    SIGNAL(valueChanged(double)),
+            SmallyOverallPlot->OASlider,
+                                SLOT(setMinValue(double)));
+    connect(ui->XmaxSpinBox,    SIGNAL(valueChanged(double)),
+            SmallyOverallPlot->OASlider,
+                                SLOT(setMaxValue(double)));
+    connect(SmallyOverallPlot->OASlider,
+                                &DoubleSlider::maxValueChanged,
+            ui->XmaxSpinBox,    &QDoubleSpinBox::setValue);
+    connect(SmallyOverallPlot->OASlider,
+                                &DoubleSlider::minValueChanged,
+            ui->XminSpinBox,    &QDoubleSpinBox::setValue);
+    qDebug()<<"Signals and slots connected";
+
+    ui->XmaxSpinBox->setValue(ChannelNum);
+    ui->XminSpinBox->setValue(0);
+    ui->LogXBox->setCheckState(Qt::Unchecked);
+    ui->LogYBox->setCheckState(Qt::Unchecked);
+    ui->DotBox ->setCheckState(Qt::Unchecked);
 
     //Sleep(500);   //To show splash screen
 }
@@ -60,6 +94,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::showSpectral(){
     SmallyOverallPlot->OADataReceive(
-                SmallySpectral->PointOAOutput());
-    qDebug()<<"Updated";
+                SmallySpectral->PointOAOutput(flagXAxisLog,
+                                              flagYAxisLog));
+    //qDebug()<<"Updated";
+}
+
+void MainWindow::setYLogAxis(bool isLog){
+    flagYAxisLog = isLog;
+}
+
+void MainWindow::setXLogAxis(bool isLog){
+    flagXAxisLog = isLog;
 }

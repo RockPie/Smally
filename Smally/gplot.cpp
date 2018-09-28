@@ -144,6 +144,8 @@ void OverallPlot::setDotDisplay(bool isDot)
     }
 }
 
+void OverallPlot::setLogMode(bool isLog){}
+
 PartPlot::PartPlot(QWidget *parent):
     QwtPlot(parent)
 {
@@ -178,7 +180,7 @@ void PartPlot::InitCanvas()
     enableAxis(QwtPlot::yLeft, false);
     enableAxis(QwtPlot::xBottom, false);
     //Set auto scale
-    //setAxisAutoScale(QwtPlot::yLeft, true);
+    setAxisAutoScale(QwtPlot::yLeft, true);
     setAutoReplot(true);
 }
 
