@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/icon">
+        <file>icon/icons8-add-new-64.png</file>
+        <file>icon/icons8-compress-64.png</file>
+        <file>icon/icons8-create-64.png</file>
+        <file>icon/icons8-edit-file-64.png</file>
+        <file>icon/icons8-expand-64.png</file>
+        <file>icon/icons8-file-64.png</file>
+        <file>icon/icons8-pause-64.png</file>
+        <file>icon/icons8-play-64.png</file>
+        <file>icon/icons8-record-64.png</file>
+        <file>icon/icons8-repeat-one-64.png</file>
+        <file>icon/icons8-slider-64.png</file>
+        <file>icon/icons8-stop-64.png</file>
+        <file>icon/icons8-collapse-64.png</file>
+        <file>icon/icons8-sd-64.png</file>
+        <file>icon/icons8-save-64.png</file>
+        <file>icon/icons8-save-as-64.png</file>
+        <file>icon/icons8-export-64.png</file>
+        <file>icon/icons8-import-64.png</file>
+    </qresource>
+</RCC>
