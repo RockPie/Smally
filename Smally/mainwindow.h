@@ -6,6 +6,7 @@
 #include <windows.h>
 #include "gplot.h"
 #include "gdatabase.h"
+#include "gfile.h"
 #include "gcomponent.h"
 #include "gthread.h"
 
@@ -26,6 +27,7 @@ private:
     Spectral *SmallySpectral;
     OverallPlot *SmallyOverallPlot;
     TimeThread *SmallyMainThread;
+    FileProcessor *SmallyFileSys;
 
     bool flagYAxisLog;
     bool flagXAxisLog;
@@ -34,8 +36,6 @@ private slots:
     void showSpectral();
     void setYLogAxis(bool isLog);
     void setXLogAxis(bool isLog);
-
-
 };
 
 #endif // MAINWINDOW_H

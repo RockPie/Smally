@@ -39,7 +39,8 @@ SOURCES += \
     gplot.cpp \
     gdatabase.cpp \
     gcomponent.cpp \
-    gthread.cpp
+    gthread.cpp \
+    gfile.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -47,7 +48,8 @@ HEADERS += \
     gsetting.h \
     gdatabase.h \
     gcomponent.h \
-    gthread.h
+    gthread.h \
+    gfile.h
 
 FORMS += \
         mainwindow.ui
@@ -59,4 +61,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     image.qrc \
-    icon.qrc
+    icon.qrc \
+    bispec.qrc

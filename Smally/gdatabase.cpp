@@ -83,3 +83,9 @@ QVector <QPointF> Spectral::PointPartOutput(
         }
     return res;
 }
+
+void Spectral::Reset()
+{
+    for(int counter = 0; counter < ChannelNum; counter++)
+        CountingData[counter] = 0;
+}

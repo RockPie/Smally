@@ -10,7 +10,7 @@ class Spectral: public QWidget
 {
     Q_OBJECT
 public:
-    Spectral(QWidget* parent, const QString ele = QString(),
+    Spectral(QWidget* parent, const QString ele = "Unknown",
              const uint nucnum = 0);
     ~Spectral();
     inline void ReceiveCount(const uint Channel);
@@ -19,6 +19,9 @@ public:
     QVector <QPointF> PointPartOutput(
             int StartPos, int Endpos,
             bool isXlog = false, bool isYlog = false) const;
+    void Reset();
+    inline double SignleOutput(int pos) const;
+    inline void setChannel(int pos, uint64_t val);
 
 public:
     QString Element;
@@ -36,6 +39,14 @@ inline void Spectral::ReceiveCount(const uint Channel)
     else
         qDebug()<<"Input count out of range\n"
                   "Incorrect count val ="<<Channel;
+}
+
+inline double Spectral::SignleOutput(int pos) const{
+    return double(CountingData[pos]);
+}
+
+inline void Spectral::setChannel(int pos, uint64_t val){
+    CountingData[pos] = val;
 }
 
 

@@ -7,13 +7,14 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("Smally");
-    resize(800, 600);   //Set size of main widget
+    setMinimumSize(800, 600);   //Set size of main widget
     flagYAxisLog = false;
     flagXAxisLog = false;
 
     SmallySpectral    = new Spectral(this);
     SmallyOverallPlot = new OverallPlot(this);
     SmallyMainThread  = new TimeThread(this);
+    SmallyFileSys     = new FileProcessor(this, SmallySpectral);
 
     //Set size policy
     QSizePolicy OAPlotPolicy = SmallyOverallPlot->sizePolicy();
@@ -24,22 +25,25 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->LeftTool->setSizePolicy(LeftToolPolicy);
 
     //Set splitter line style
+    /*
     ui->splitter->setStyleSheet(
                 "QSplitter::handle{background-color:gray}");
     ui->splitter->setHandleWidth(1);
     QSplitterHandle *handle = ui->splitter->handle(2);
     if(handle)
         handle->setFixedHeight(1);
-
-    //Set size of Left, Mid and Right layout
-    ui->splitter->setStretchFactor(0,1);
-    ui->splitter->setStretchFactor(1,4);
-    ui->splitter->setStretchFactor(2,1);
+     */
 
     //Add component to widget
     ui->MidLay->addWidget(SmallyOverallPlot->OASlider);
     ui->MidLay->addWidget(SmallyOverallPlot);
     ui->MidLay->addWidget(SmallyOverallPlot->AttachedPlot);
+
+    //Set size of Left, Mid and Right layout
+    ui->splitter->setStretchFactor(0,6);
+    ui->splitter->setStretchFactor(1,1);
+    ui->splitter_2->setStretchFactor(0,1);
+    ui->splitter_2->setStretchFactor(1,3);
     qDebug()<<"Mainwindow Created";
 
     /***Connect Slots and Signals***/
@@ -49,6 +53,29 @@ MainWindow::MainWindow(QWidget *parent) :
             this,               &MainWindow::showSpectral);
     connect(ui->ThreadBox,      &QCheckBox::clicked,
             SmallyMainThread,   &TimeThread::setTimeThread);
+    //Set action button
+    connect(ui->actionStart,    &QAction::triggered,
+            ui->actionPause,    &QAction::setDisabled);
+    connect(ui->actionStart,    &QAction::triggered,
+            ui->actionStart,    &QAction::setEnabled);
+    connect(ui->actionPause,    &QAction::triggered,
+            ui->actionPause,    &QAction::setEnabled);
+    connect(ui->actionPause,    &QAction::triggered,
+            ui->actionStart,    &QAction::setDisabled);
+    connect(ui->actionClear,    &QAction::triggered,
+            ui->actionPause,    &QAction::setEnabled);
+    connect(ui->actionClear,    &QAction::triggered,
+            ui->actionStart,    &QAction::setDisabled);
+
+    connect(ui->actionNew,      &QAction::triggered,
+            SmallyFileSys,      &FileProcessor::creatFile);
+    connect(ui->actionSave,     &QAction::triggered,
+            SmallyFileSys,      &FileProcessor::saveFile);
+    connect(ui->actionSave_as,  &QAction::triggered,
+            SmallyFileSys,      &FileProcessor::saveFile_as);
+    connect(ui->actionOpen,     &QAction::triggered,
+            SmallyFileSys,      &FileProcessor::openFile);
+    //Set refresh
     connect(SmallyMainThread,   &TimeThread::Timeout100ms,
             this,               &MainWindow::showSpectral);
     //Link logbox
@@ -84,7 +111,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->LogXBox->setCheckState(Qt::Unchecked);
     ui->LogYBox->setCheckState(Qt::Unchecked);
     ui->DotBox ->setCheckState(Qt::Unchecked);
-
+    ui->actionPause->setDisabled(true);
     //Sleep(500);   //To show splash screen
 }
 

@@ -10,4 +10,6 @@
 #define OAMaxLinePos ChannelNum - 1
 #define OAInitialVal 0
 
+#define FileInfo "Smally Spectral version 0.01"
+
 #endif // GSETTING_H
