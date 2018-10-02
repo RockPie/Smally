@@ -11,7 +11,7 @@
 #include "gdatabase.h"
 #include "gsetting.h"
 
-class FileProcessor: public QWidget
+class FileProcessor: public QObject
 {
     Q_OBJECT
 public:
@@ -30,6 +30,7 @@ private:
     bool isNewFile;
     Spectral *UserSpectral;
     QString UsedName;
+    QWidget *WidgetBuff;
 
 };
 

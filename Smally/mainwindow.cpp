@@ -2,8 +2,8 @@
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    QMainWindow(parent)
+  , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     setWindowTitle("Smally");
@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QSplitterHandle *handle = ui->splitter->handle(2);
     if(handle)
         handle->setFixedHeight(1);
-     */
+    */
 
     //Add component to widget
     ui->MidLay->addWidget(SmallyOverallPlot->OASlider);
@@ -75,6 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
             SmallyFileSys,      &FileProcessor::saveFile_as);
     connect(ui->actionOpen,     &QAction::triggered,
             SmallyFileSys,      &FileProcessor::openFile);
+
     //Set refresh
     connect(SmallyMainThread,   &TimeThread::Timeout100ms,
             this,               &MainWindow::showSpectral);
@@ -112,12 +113,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->LogYBox->setCheckState(Qt::Unchecked);
     ui->DotBox ->setCheckState(Qt::Unchecked);
     ui->actionPause->setDisabled(true);
+    SmallyMainThread->start();
     //Sleep(500);   //To show splash screen
 }
 
 MainWindow::~MainWindow()
 {
-    delete SmallyMainThread;
+    delete SmallyFileSys;
+    SmallyMainThread->deleteLater();
     delete SmallyOverallPlot;
     delete SmallySpectral;
     delete ui;

@@ -2,7 +2,7 @@
 
 Spectral::Spectral(QWidget* parent, const QString ele,
                    const uint nucnum):
-    QWidget(parent)
+    QObject(parent)
 {
     Element = ele;
     NucleonNum = nucnum;

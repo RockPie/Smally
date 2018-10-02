@@ -9,6 +9,7 @@ class TimeThread: public QThread
 public:
     explicit TimeThread(QObject *parent);
     ~TimeThread();
+    inline void stopMain();
 
 public slots:
     void MainTimeoutHandle();
@@ -17,7 +18,6 @@ public slots:
 
 protected:
     void runMain();
-    inline void stopMain();
 
 private:
     QTimer *MainTimer;

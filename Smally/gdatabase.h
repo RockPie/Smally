@@ -6,7 +6,7 @@
 #include <QWidget>
 #include <QtCore/qmath.h>
 
-class Spectral: public QWidget
+class Spectral: public QObject
 {
     Q_OBJECT
 public:
@@ -22,6 +22,8 @@ public:
     void Reset();
     inline double SignleOutput(int pos) const;
     inline void setChannel(int pos, uint64_t val);
+    inline void setElement(QString ele);
+    inline void setNucNum(uint nucnum);
 
 public:
     QString Element;
@@ -47,6 +49,14 @@ inline double Spectral::SignleOutput(int pos) const{
 
 inline void Spectral::setChannel(int pos, uint64_t val){
     CountingData[pos] = val;
+}
+
+inline void Spectral::setElement(QString ele){
+    Element = ele;
+}
+
+inline void Spectral::setNucNum(uint nucnum){
+    NucleonNum = nucnum;
 }
 
 
