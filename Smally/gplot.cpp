@@ -118,7 +118,7 @@ void OverallPlot::MinSysChange(double val)
     SysCurveXmin[1] = val;
     SysCurveRefresh();
     AttachedPlot->setAxisScale(QwtPlot::xBottom, val,
-                               axisInterval(QwtPlot::yLeft).maxValue());
+                               AttachedPlot->axisInterval(QwtPlot::xBottom).maxValue());
 }
 
 void OverallPlot::MaxSysChange(double val)
@@ -129,7 +129,7 @@ void OverallPlot::MaxSysChange(double val)
     SysCurveXmax[1] = val;
     SysCurveRefresh();
     AttachedPlot->setAxisScale(QwtPlot::xBottom,
-                               axisInterval(QwtPlot::yLeft).minValue(), val);
+                               AttachedPlot->axisInterval(QwtPlot::xBottom).minValue(), val);
 }
 
 void OverallPlot::setDotDisplay(bool isDot)

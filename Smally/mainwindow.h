@@ -36,6 +36,7 @@ private slots:
     void showSpectral();
     void setYLogAxis(bool isLog);
     void setXLogAxis(bool isLog);
+    void setDataSeries();
 };
 
 #endif // MAINWINDOW_H

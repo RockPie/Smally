@@ -10,9 +10,9 @@ CONFIG      += qwt
 DEFINES     += QT_DLL QWT_DLL
 
 # When releasing, use -lqwt.
-#LIBS        += -L"C:\Qt\Qwt\build-qwt-Desktop_Qt_5_11_1_MinGW_32bit-Debug\lib" -lqwt
+LIBS        += -L"C:\Qt\Qwt\build-qwt-Desktop_Qt_5_11_1_MinGW_32bit-Debug\lib" -lqwt
 # When debugging, use -lqwtd.
-LIBS        += -L"C:\Qt\Qwt\build-qwt-Desktop_Qt_5_11_1_MinGW_32bit-Debug\lib" -lqwtd
+#LIBS        += -L"C:\Qt\Qwt\build-qwt-Desktop_Qt_5_11_1_MinGW_32bit-Debug\lib" -lqwtd
 
 INCLUDEPATH += C:\Qt\5.11.1\mingw53_32\include\QWT
 

@@ -12,4 +12,6 @@
 
 #define FileInfo "Smally Spectral version 0.01"
 
+
+
 #endif // GSETTING_H

@@ -79,6 +79,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //Set refresh
     connect(SmallyMainThread,   &TimeThread::Timeout100ms,
             this,               &MainWindow::showSpectral);
+    connect(SmallyMainThread,   &TimeThread::Timeout50ms,
+            this,               &MainWindow::setDataSeries);
     //Link logbox
     connect(ui->LogXBox,        &QCheckBox::clicked,
             this,               &MainWindow::setXLogAxis);
@@ -139,4 +141,13 @@ void MainWindow::setYLogAxis(bool isLog){
 
 void MainWindow::setXLogAxis(bool isLog){
     flagXAxisLog = isLog;
+}
+
+void MainWindow::setDataSeries()
+{
+    for(int counter = 0; counter < 1000; counter++)
+    {
+        int buff = (rand() % (1023-0+1))+ 0;
+        SmallySpectral->ReceiveCount(buff);
+    }
 }
