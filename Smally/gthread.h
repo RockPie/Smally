@@ -15,6 +15,8 @@ public slots:
     void MainTimeoutHandle();
     void AccurateTimeoutHandle();
     void setTimeThread(bool startThread);
+    void startTimeThread();
+    void pauseTimeThread();
 
 protected:
     void runMain();

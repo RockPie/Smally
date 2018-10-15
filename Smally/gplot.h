@@ -9,7 +9,40 @@
 #include <QtCore/qmath.h>
 #include "gsetting.h"
 #include "gcomponent.h"
+#include "gpaintingsystem.h"
 
+class PartPlot: public GPlot
+{
+    Q_OBJECT
+public:
+    explicit PartPlot(QWidget *parent);
+    ~PartPlot();
+private:
+    double InitPartX[ChannelNum];
+    double InitPartY[ChannelNum];
+};
+
+class OverallPlot: public GPlot
+{
+    Q_OBJECT
+public:
+    explicit OverallPlot(QWidget *parent);
+    ~OverallPlot();
+    void OADataReceive(
+            const QVector<QPointF> OAdata);
+
+public slots:
+    void setDotDisplay(bool val);
+    void setXLogMode(bool val);
+    void setYLogMode(bool val);
+
+public:
+    PartPlot *AttachedPlot;
+    DoubleSlider *OASlider;
+
+};
+
+/*
 class PartPlot: public QwtPlot
 {
     Q_OBJECT
@@ -43,7 +76,10 @@ inline void PartPlot::setPPLines(){
 inline void PartPlot::setPPData(QVector <QPointF> input){
     PartCurve->setSamples(input);
 }
+*/
 
+
+/*
 class OverallPlot: public QwtPlot
 {
     Q_OBJECT
@@ -89,6 +125,7 @@ inline void OverallPlot::SysCurveRefresh()
     SysCurve[1].setSamples(SysCurveXmax, SysCurveY, 2);
     this->replot();
 }
+*/
 
 
 

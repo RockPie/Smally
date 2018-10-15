@@ -40,7 +40,8 @@ SOURCES += \
     gdatabase.cpp \
     gcomponent.cpp \
     gthread.cpp \
-    gfile.cpp
+    gfile.cpp \
+    gpaintingsystem.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -49,7 +50,8 @@ HEADERS += \
     gdatabase.h \
     gcomponent.h \
     gthread.h \
-    gfile.h
+    gfile.h \
+    gpaintingsystem.h
 
 FORMS += \
         mainwindow.ui

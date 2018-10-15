@@ -1,5 +1,5 @@
 #include "gplot.h"
-
+/*
 OverallPlot::OverallPlot(QWidget *parent):
     QwtPlot(parent)
 {
@@ -67,12 +67,6 @@ void OverallPlot::AddMainCurve()
     //Set curve color
     MainCurve->setPen(Qt::yellow, 2);
     //Set sample dot color
-    /*
-    QwtSymbol *SymbolBuf =
-            new QwtSymbol(QwtSymbol::Ellipse,QBrush(Qt::yellow),
-                          QPen(Qt::red, 2), QSize(2, 2));
-    MainCurve->setSymbol(SymbolBuf);
-    */
     MainCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
     MainCurve->setLegendAttribute(QwtPlotCurve::LegendShowBrush);
     MainCurve->setStyle(QwtPlotCurve::Lines);
@@ -118,7 +112,7 @@ void OverallPlot::MinSysChange(double val)
     SysCurveXmin[1] = val;
     SysCurveRefresh();
     AttachedPlot->setAxisScale(QwtPlot::xBottom, val,
-                               AttachedPlot->axisInterval(QwtPlot::xBottom).maxValue());
+                               AttachedPlot->axisInterval(xBottom).maxValue());
 }
 
 void OverallPlot::MaxSysChange(double val)
@@ -183,21 +177,73 @@ void OverallPlot::setYLogMode(bool isLog)
                      double(qRound((exp(0.05 * axisInterval(QwtPlot::yLeft)
                                         .maxValue())) - 1)));
 }
+*/
 
 PartPlot::PartPlot(QWidget *parent):
-    QwtPlot(parent)
+    GPlot (parent)
 {
     for(int counter = 0; counter < ChannelNum; counter++)
     {
         InitPartX[counter] = counter;
         InitPartY[counter] = 0;
     }
-    InitCanvas();
-    AddPartCurve();
+    this->setAxisScale(xBottom, 0.0, ChannelNum - 1);
+    this->setAxisScale(yLeft,   0.0, OverallYIniMax);
+    this->disableSysCurve();
+    this->enableAutoScale();
+    //InitCanvas();
+    //AddPartCurve();
 }
 
 PartPlot::~PartPlot(){}
 
+OverallPlot::OverallPlot(QWidget *parent):
+    GPlot (parent)
+{
+    AttachedPlot = new PartPlot(parent);
+    OASlider = new DoubleSlider(parent);
+    this->enableSysCurve();
+    setSysMax(ChannelNum - 1);
+    setSysMin(0);
+    this->enableAutoScale();
+    this->setAxisScale(xBottom, 0.0, ChannelNum - 1);
+    this->setAxisScale(yLeft,   0.0, OverallYIniMax);
+    connect(OASlider,       &DoubleSlider::maxValueChanged,
+            this,           &GPlot::setSysMax);
+    connect(OASlider,       &DoubleSlider::minValueChanged,
+            this,           &GPlot::setSysMin);
+    connect(OASlider,       &DoubleSlider::maxValueChanged,
+            AttachedPlot,   &GPlot::setMaxBorder);
+    connect(OASlider,       &DoubleSlider::minValueChanged,
+            AttachedPlot,   &GPlot::setMinBorder);
+}
+
+OverallPlot::~OverallPlot()
+{
+    delete OASlider;
+    delete AttachedPlot;
+}
+
+void OverallPlot::setDotDisplay(bool val){
+    this->setLinePattern(val);
+    AttachedPlot->setLinePattern(val);
+    this->replot();
+    AttachedPlot->replot();
+}
+
+void OverallPlot::setXLogMode(bool val){}
+void OverallPlot::setYLogMode(bool val){}
+
+void OverallPlot::OADataReceive(
+        const QVector<QPointF> OAdata)
+{
+    this->setSamples(OAdata);
+    AttachedPlot->setSamples(OAdata);
+    this->replot();
+    AttachedPlot->replot();
+}
+
+/*
 void PartPlot::InitCanvas()
 {
     //Set background color
@@ -221,22 +267,19 @@ void PartPlot::InitCanvas()
     setAxisAutoScale(QwtPlot::yLeft, true);
     setAutoReplot(true);
 }
+*/
 
+/*
 void PartPlot::AddPartCurve()
 {
     PartCurve = new QwtPlotCurve;
     //Set curve color
     PartCurve->setPen(Qt::yellow, 2);
     //Set sample dot color
-    /*
-    QwtSymbol *SymbolBuf =
-            new QwtSymbol(QwtSymbol::Ellipse,QBrush(Qt::yellow),
-                          QPen(Qt::red, 2), QSize(2, 2));
-    MainCurve->setSymbol(SymbolBuf);
-    */
     PartCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
     PartCurve->setLegendAttribute(QwtPlotCurve::LegendShowBrush);
     PartCurve->setStyle(QwtPlotCurve::Lines);
     PartCurve->setSamples(InitPartX, InitPartY, ChannelNum);
     PartCurve->attach(this);
 }
+*/

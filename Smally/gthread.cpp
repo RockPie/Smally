@@ -61,3 +61,12 @@ void TimeThread::setTimeThread(bool startThread)
 void TimeThread::AccurateTimeoutHandle(){
     emit Timeoutms();
 }
+
+void TimeThread::startTimeThread(){
+    runMain();
+}
+
+void TimeThread::pauseTimeThread(){
+    stopMain();
+}
+

@@ -19,11 +19,13 @@ public:
     QVector <QPointF> PointPartOutput(
             int StartPos, int Endpos,
             bool isXlog = false, bool isYlog = false) const;
-    void Reset();
     inline double SignleOutput(int pos) const;
     inline void setChannel(int pos, uint64_t val);
     inline void setElement(QString ele);
     inline void setNucNum(uint nucnum);
+
+public slots:
+    void Reset();
 
 public:
     QString Element;
@@ -31,6 +33,9 @@ public:
 
 private:
     uint64_t *CountingData;
+
+signals:
+    void Changed();
 };
 
 //Receive one signal

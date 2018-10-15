@@ -36,12 +36,12 @@ void DoubleSlider::paintValueLabel(QPainter* painter)
     int maxtextWidth = metrics.width(maxValueString);
     int textHeight = metrics.height();
 
-    //---- paint text
+    //paint text
     painter->drawText(QRectF(2,4,mintextWidth,textHeight),minValueString);
     painter->drawText(QRectF(width() - maxtextWidth -2, 4,
                              maxtextWidth,textHeight), maxValueString);
 
-    //----- paint label
+    //paint label
     painter->setFont(QFont("Arial",12));
     metrics = painter->fontMetrics();
     int labelWidth = metrics.width(m_label);
@@ -120,7 +120,7 @@ void DoubleSlider::setMinValue(double val)
 
 void DoubleSlider::setMaxValue(double val)
 {
-    if(fabs(m_maxValue - val) > m_singleStep ){
+    if(fabs(m_maxValue - val) >= m_singleStep ){
         if(int(m_singleStep) == 1)
             m_maxValue = double(int(val));
         else

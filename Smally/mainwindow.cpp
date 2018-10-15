@@ -67,6 +67,16 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionClear,    &QAction::triggered,
             ui->actionStart,    &QAction::setDisabled);
 
+    connect(ui->actionClear,    &QAction::triggered,
+            SmallySpectral,     &Spectral::Reset);
+    connect(ui->actionStart,    &QAction::triggered,
+            SmallyMainThread,   &TimeThread::startTimeThread);
+    connect(ui->actionPause,    &QAction::triggered,
+            SmallyMainThread,   &TimeThread::pauseTimeThread);
+
+    connect(SmallySpectral,     &Spectral::Changed,
+            this,               &MainWindow::showSpectral);
+
     connect(ui->actionNew,      &QAction::triggered,
             SmallyFileSys,      &FileProcessor::creatFile);
     connect(ui->actionSave,     &QAction::triggered,
@@ -116,7 +126,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->DotBox ->setCheckState(Qt::Unchecked);
     ui->actionPause->setDisabled(true);
     SmallyMainThread->start();
-    //Sleep(500);   //To show splash screen
 }
 
 MainWindow::~MainWindow()
@@ -145,9 +154,10 @@ void MainWindow::setXLogAxis(bool isLog){
 
 void MainWindow::setDataSeries()
 {
+    uint buff = 0;
     for(int counter = 0; counter < 1000; counter++)
     {
-        int buff = (rand() % (1023-0+1))+ 0;
+        buff = (rand() % (1023-0+1))+ 0;
         SmallySpectral->ReceiveCount(buff);
     }
 }
