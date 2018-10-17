@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/spectral">
+        <file>bulid-in_spec/data0.txt</file>
+        <file>bulid-in_spec/data1.txt</file>
+        <file>bulid-in_spec/data2.txt</file>
+        <file>bulid-in_spec/data3.txt</file>
+        <file>bulid-in_spec/data4.txt</file>
+    </qresource>
+</RCC>
