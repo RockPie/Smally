@@ -270,11 +270,46 @@
         </layout>
        </widget>
        <widget class="QWidget" name="verticalLayoutWidget">
-        <layout class="QVBoxLayout" name="RightLay" stretch="0,0,0">
+        <layout class="QVBoxLayout" name="RightLay" stretch="0,0,0,0,0,0">
          <item>
           <widget class="QTimeEdit" name="timeEdit">
            <property name="displayFormat">
             <string>HH:mm:ss.zzz</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_12">
+           <item>
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>主机：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="hostlineEdit"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_13">
+           <item>
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>端口号：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="portlineEdit"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="linkButton">
+           <property name="text">
+            <string>连接</string>
            </property>
           </widget>
          </item>

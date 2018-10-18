@@ -9,6 +9,7 @@
 #include "gfile.h"
 #include "gcomponent.h"
 #include "gthread.h"
+#include "gclient.h"
 
 namespace Ui {
 class MainWindow;
@@ -32,11 +33,17 @@ private:
     QString CurveTitle;
     GGuideLight *USBLight;
     GGuideLight *StatusLight;
-    QLabel *USBInfo;
+    QLabel *TCPInfo;
     QLabel *StatusInfo;
     DataEngine *DataSource;
+    GNetwork *SmallyClient;
     bool flagYAxisLog;
     bool flagXAxisLog;
+    bool isLinked;
+
+signals:
+    void startLink();
+    void stopLink();
 
 private slots:
     void showSpectral();
@@ -44,12 +51,15 @@ private slots:
     void setXLogAxis(bool isLog);
     void setDataSeries();
 
-    void showUSBdiaconnected();
-    void showUSBconnected();
-    void showUSBerror();
     void showSYSstarted();
     void showSYSpaused();
     void showSYScleared();
+
+    void showHostLinked();
+    void showHostDisconnected();
+    void showLinkError(QString info);
+
+    void changeButton();
 };
 
 #endif // MAINWINDOW_H

@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     flagYAxisLog = false;
     flagXAxisLog = false;
+    isLinked = false;
 
     SmallySpectral    = new Spectral(this);
     SmallyOverallPlot = new OverallPlot(this);
@@ -19,9 +20,10 @@ MainWindow::MainWindow(QWidget *parent) :
     SmallyFileSys     = new FileProcessor(this, SmallySpectral);
     USBLight          = new GGuideLight(this);
     StatusLight       = new GGuideLight(this);
-    USBInfo           = new QLabel(this);
+    TCPInfo           = new QLabel(this);
     StatusInfo        = new QLabel(this);
     DataSource        = new DataEngine(this);
+    SmallyClient      = new GNetwork(this);
     qDebug()<<"Component Created";
 
     //Set size policy
@@ -47,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->MidLay->addWidget(SmallyOverallPlot);
     ui->MidLay->addWidget(SmallyOverallPlot->AttachedPlot);
     ui->statusBar->addWidget(USBLight);
-    ui->statusBar->addWidget(USBInfo);
+    ui->statusBar->addWidget(TCPInfo);
     ui->statusBar->addWidget(StatusLight);
     ui->statusBar->addWidget(StatusInfo);
 
@@ -98,9 +100,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionClear,    &QAction::triggered,
             SmallySpectral,     &Spectral::Reset);
     connect(ui->actionStart,    &QAction::triggered,
-            SmallyMainThread,   &TimeThread::startTimeThread);
+            SmallyMainThread,   &TimeThread::startTimeThread , Qt::QueuedConnection);
     connect(ui->actionPause,    &QAction::triggered,
-            SmallyMainThread,   &TimeThread::pauseTimeThread);
+            SmallyMainThread,   &TimeThread::pauseTimeThread , Qt::QueuedConnection);
 
     connect(SmallySpectral,     &Spectral::Changed,
             this,               &MainWindow::showSpectral);
@@ -118,9 +120,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Set refresh
     connect(SmallyMainThread,   &TimeThread::Timeout50ms,
-            this,               &MainWindow::showSpectral);
+            this,               &MainWindow::showSpectral , Qt::QueuedConnection);
     connect(SmallyMainThread,   &TimeThread::Timeout50ms,
-            this,               &MainWindow::setDataSeries);
+            this,               &MainWindow::setDataSeries , Qt::QueuedConnection);
     //Link logbox
     connect(ui->LogXBox,        &QCheckBox::clicked,
             this,               &MainWindow::setXLogAxis);
@@ -188,11 +190,35 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(SmallyOverallPlot->OASlider,
                                 &DoubleSlider::minValueChanged,
             ui->XminSpinBox,    &QDoubleSpinBox::setValue);
+
     //Link Plot Info
     connect(SmallyOverallPlot,  &GPlot::MaxCountChanged,
             ui->MaxCount,       &QLabel::setText);
     connect(SmallyOverallPlot,  &GPlot::MinCountChanged,
             ui->MinCount,       &QLabel::setText);
+
+    //Link Host Info input
+    connect(ui->hostlineEdit,   &QLineEdit::textChanged,
+            SmallyClient,       &GNetwork::setHostName, Qt::QueuedConnection);
+    connect(ui->portlineEdit,   &QLineEdit::textChanged,
+            SmallyClient,       &GNetwork::setPortNum, Qt::QueuedConnection);
+
+    connect(SmallyClient,       &GNetwork::newConnectionSet,
+            USBLight,           &GGuideLight::setGreen , Qt::QueuedConnection);
+    connect(SmallyClient,       &GNetwork::newConnectionSet,
+            this,               &MainWindow::showHostLinked , Qt::QueuedConnection);
+    connect(SmallyClient,       &GNetwork::errorMet,
+            this,               &MainWindow::showLinkError , Qt::QueuedConnection);
+    connect(SmallyClient,       &GNetwork::connectionDisabled,
+            this,               &MainWindow::showHostDisconnected , Qt::QueuedConnection);
+
+    connect(ui->linkButton,     &QPushButton::clicked,
+            this,               &MainWindow::changeButton);
+    connect(this,               &MainWindow::startLink,
+            SmallyClient,       &GNetwork::newConnect , Qt::QueuedConnection);
+    connect(this,               &MainWindow::stopLink,
+            SmallyClient,       &GNetwork::disconnect , Qt::QueuedConnection);
+
     qDebug()<<"Signals and slots connected";
 
     ui->XmaxSpinBox->setValue(ChannelNum - 1);
@@ -205,15 +231,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->TPFBox->setCheckState(Qt::Unchecked);
     ui->HAFBox->setCheckState(Qt::Unchecked);
     ui->actionPause->setDisabled(true);
-    SmallyMainThread->start();
     USBLight->update();
     StatusLight->update();
     this->showSYScleared();
-    this->showUSBdiaconnected();
+    this->showHostDisconnected();
+    ui->hostlineEdit->setText("localhost");
+    ui->portlineEdit->setText("6666");
 }
 
 MainWindow::~MainWindow()
 {
+    SmallyClient->deleteLater();
     delete DataSource;
     delete StatusLight;
     delete USBLight;
@@ -249,21 +277,6 @@ void MainWindow::setDataSeries()
     }
 }
 
-void MainWindow::showUSBdiaconnected(){
-    USBInfo->setText("USB Disconnected");
-    USBInfo->update();
-}
-
-void MainWindow::showUSBconnected(){
-    USBInfo->setText("USB Connected");
-    USBInfo->update();
-}
-
-void MainWindow::showUSBerror(){
-    USBInfo->setText("USB ERROR");
-    USBInfo->update();
-}
-
 void MainWindow::showSYSstarted(){
     StatusInfo->setText("Collecting Started");
     StatusInfo->update();
@@ -278,3 +291,38 @@ void MainWindow::showSYScleared(){
     StatusInfo->setText("Data Cleaned");
     StatusInfo->update();
 }
+
+void MainWindow::showHostLinked(){
+    TCPInfo->setText("TCP Connected");
+    TCPInfo->update();
+}
+
+void MainWindow::showLinkError(QString info){
+    USBLight->setYellow();
+    TCPInfo->setText(info);
+    TCPInfo->update();
+}
+
+void MainWindow::showHostDisconnected(){
+    USBLight->setRed();
+    TCPInfo->setText("TCP Disconnected");
+    TCPInfo->update();
+}
+
+void MainWindow::changeButton()
+{
+    if(isLinked)
+    {
+        ui->linkButton->setText("连接");
+        isLinked = false;
+        emit stopLink();
+    }
+    else
+    {
+        ui->linkButton->setText("断开连接");
+        isLinked = true;
+        emit startLink();
+    }
+}
+
+
