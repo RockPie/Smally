@@ -21,6 +21,9 @@ TimeThread::~TimeThread()
 {
     delete AccurateTimer;
     delete MainTimer;
+    this->requestInterruption();
+    this->quit();
+    this->wait();
 }
 
 void TimeThread::runMain()

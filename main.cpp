@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     //Set splash screen
-    QPixmap SmallyPixmap(":/png/SplashScreen.png");
+    QPixmap SmallyPixmap(":/png/Logo.jpg");
     QSplashScreen *SmallySplash = new QSplashScreen(SmallyPixmap);
     SmallySplash->show();
     app.processEvents();

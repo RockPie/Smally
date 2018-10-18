@@ -20,7 +20,6 @@ public slots:
     void setHostName(QString str);
     void setPortNum(QString str);
     void disconnect();
-    //void killThread();
 
 protected:
     virtual void run();
@@ -32,8 +31,8 @@ signals:
     void connectionDisabled();
 
 private:
-    QTcpSocket *tcpSocket;
-    QString tcpMessage;
+    QTcpSocket *GtcpSocket;
+    QString GtcpMessage;
     quint16 BlockSize;
 
     QString hostName;
