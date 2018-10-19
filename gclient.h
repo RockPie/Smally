@@ -3,6 +3,7 @@
 
 #include <QtNetwork>
 #include <QTextStream>
+#include <QAbstractSocket>
 #include <QThread>
 
 class GNetwork: public QThread
