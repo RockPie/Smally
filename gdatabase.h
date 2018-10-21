@@ -21,12 +21,12 @@ public:
             bool isXlog = false, bool isYlog = false) const;
     inline double SignalOutput(int pos) const;
     inline void setChannel(int pos, uint64_t val);
-    inline void setElement(QString ele);
-    inline void setNucNum(uint nucnum);
     QString getInfo() const;
 
 public slots:
     void Reset();
+    inline void setElement(QString ele);
+    inline void setNucNum(uint nucnum);
 
 public:
     QString Element;
@@ -36,7 +36,8 @@ private:
     uint64_t *CountingData;
 
 signals:
-    void Changed();
+    void SpecChanged();
+    void NucChanged();
 };
 
 //Receive one signal
@@ -59,10 +60,12 @@ inline void Spectral::setChannel(int pos, uint64_t val){
 
 inline void Spectral::setElement(QString ele){
     Element = ele;
+    emit NucChanged();
 }
 
 inline void Spectral::setNucNum(uint nucnum){
     NucleonNum = nucnum;
+    emit NucChanged();
 }
 
 

@@ -41,7 +41,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>439</width>
+             <width>348</width>
              <height>431</height>
             </rect>
            </property>
@@ -224,7 +224,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>439</width>
+             <width>348</width>
              <height>431</height>
             </rect>
            </property>
@@ -270,46 +270,11 @@
         </layout>
        </widget>
        <widget class="QWidget" name="verticalLayoutWidget">
-        <layout class="QVBoxLayout" name="RightLay" stretch="0,0,0,0,0,0">
+        <layout class="QVBoxLayout" name="RightLay" stretch="0,0,0,0,0,0,0">
          <item>
           <widget class="QTimeEdit" name="timeEdit">
            <property name="displayFormat">
             <string>HH:mm:ss.zzz</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_12">
-           <item>
-            <widget class="QLabel" name="label_5">
-             <property name="text">
-              <string>主机：</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="hostlineEdit"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_13">
-           <item>
-            <widget class="QLabel" name="label_6">
-             <property name="text">
-              <string>端口号：</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="portlineEdit"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <widget class="QPushButton" name="linkButton">
-           <property name="text">
-            <string>连接</string>
            </property>
           </widget>
          </item>
@@ -327,9 +292,140 @@
           </spacer>
          </item>
          <item>
-          <widget class="QCheckBox" name="ThreadBox">
+          <layout class="QHBoxLayout" name="horizontalLayout_14">
+           <item>
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>数据源：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="SourcecomboBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <item>
+              <property name="text">
+               <string>模拟信号源</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>外部服务器</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_15">
+           <item>
+            <widget class="QLabel" name="label_8">
+             <property name="text">
+              <string>模拟信号源选择：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="SimcomboBox">
+             <item>
+              <property name="text">
+               <string>Data 1</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Data 2</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Data 3</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Data 4</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Data 5</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_12">
+           <item>
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>主机：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="hostlineEdit">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_13">
+           <item>
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>端口号：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="portlineEdit">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="linkButton">
            <property name="text">
-            <string>开启时间线程</string>
+            <string>连接</string>
            </property>
           </widget>
          </item>

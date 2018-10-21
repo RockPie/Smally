@@ -14,6 +14,12 @@ void FileProcessor::creatFile()
 {
     isNewFile = true;
     cleanFile();
+    NewFile_Dialog *NewFileWindow = new NewFile_Dialog(WidgetBuff);
+    connect(NewFileWindow,      &NewFile_Dialog::NucNamechanged,
+            this,               &FileProcessor::setNucName);
+    connect(NewFileWindow,      &NewFile_Dialog::NucNumchanged,
+            this,               &FileProcessor::setNucNum);
+    NewFileWindow->show();
 }
 
 void FileProcessor::cleanFile(){
@@ -162,5 +168,13 @@ void FileProcessor::openFile()
     UsedName = str;
     isNewFile = false;
     emit NewDataLoaded();
+}
+
+void FileProcessor::setNucName(QString input){
+    UserSpectral->setElement(input);
+}
+
+void FileProcessor::setNucNum(int input){
+    UserSpectral->setNucNum(uint(input));
 }
 

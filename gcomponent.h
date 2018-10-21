@@ -12,7 +12,7 @@ class DoubleSlider : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DoubleSlider(QWidget* parent);
+    explicit DoubleSlider(QWidget* parent = nullptr);
     ~DoubleSlider();
     void setRange(double min, double max);
     void setSingleStep(double step);

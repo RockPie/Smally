@@ -75,10 +75,56 @@ void TimeThread::pauseTimeThread(){
 
 DataEngine::DataEngine(QObject *parent):
     QThread (parent)
+  , DataNum(0)
 {
-    OriginData = new int[ChannelNum];
-    int pos = 0;
-    QFile myfile(":/spectral/data0.txt");
+    OriginData = new int*[5];
+    for(int counter = 0; counter < 5; counter++)
+        OriginData[counter] = new int[ChannelNum];
+    ReadtoInt(":/spectral/bulid-in_spec/data0.txt", 0);
+    ReadtoInt(":/spectral/bulid-in_spec/data1.txt", 1);
+    ReadtoInt(":/spectral/bulid-in_spec/data2.txt", 2);
+    ReadtoInt(":/spectral/bulid-in_spec/data3.txt", 3);
+    ReadtoInt(":/spectral/bulid-in_spec/data4.txt", 4);
+    pause.lock();
+    this->start();
+
+}
+
+DataEngine::~DataEngine()
+{
+    this->requestInterruption();
+    this->quit();
+    this->wait();
+}
+
+void DataEngine::run()
+{
+    while(1)
+    {
+        int randbuff = 0;
+        int subcounter = 0;
+        pause.lock();
+        QTime time;
+        time= QTime::currentTime();
+        qsrand(uint(time.msec()+time.second()*1000));
+        for(int counter = 0; counter < 500; counter++)
+        {
+            randbuff = (qrand() % (OriginData[DataNum][ChannelNum - 1]));
+            for(subcounter = 0; subcounter < ChannelNum; subcounter++)
+                if(randbuff <= OriginData[DataNum][subcounter])
+                    break;
+            emit SimulateEvent(subcounter);
+        }
+        for(int counter = 0; counter < 250; counter++)
+            emit SimulateEvent(qrand() % ChannelNum);
+        msleep(10);
+        pause.unlock();
+    }
+}
+
+void DataEngine::ReadtoInt(QString fname, int pos)
+{
+    QFile myfile(fname);
     myfile.open(QFile::ReadOnly);
     QTextStream textStream(&myfile);
     while(!textStream.atEnd())
@@ -86,33 +132,19 @@ DataEngine::DataEngine(QObject *parent):
         QString Line = textStream.readLine();
         if(Line.isEmpty())
             continue;
-        QStringList List = Line.split(QRegExp("[, \t;|]"));
-        for(int counter = 0; counter < Line.length(); counter++, pos++)
-        {
-            if(pos != 0)
-                OriginData[pos] = List.value(pos).toInt() + OriginData[pos - 1];
-            else
-                OriginData[pos] = List.value(pos).toInt();
+        QStringList List = Line.split(' ');
+        Databuffer[0] = List.value(0).toInt();
+        for(int counter = 1; counter < ChannelNum; counter++){
+                Databuffer[counter] =
+                List.value(counter).toInt() + Databuffer[counter - 1];
         }
     }
+    int coe = int(Databuffer[ChannelNum - 1] / 10000);
+    for(int counter = 0; counter < ChannelNum; counter++)
+        OriginData[pos][counter] = int(Databuffer[counter] / coe);
     myfile.close();
 }
 
-void DataEngine::run()
-{
-    while(1)
-    {
-        long long int randbuff = 0;
-        pause.lock();
-        int counter;
-        for(counter = 0; counter < 1000; counter++)
-        {
-            randbuff = (rand() % (OriginData[ChannelNum - 1]+1));
-            for(counter = 0; counter < ChannelNum; counter++)
-                if(randbuff <= OriginData[counter])
-                    break;
-            emit SimulateEvent(counter);
-        }
-        pause.unlock();
-    }
+void DataEngine::setDataNum(int input){
+    DataNum = input;
 }

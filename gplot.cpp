@@ -26,7 +26,6 @@ OverallPlot::OverallPlot(QWidget *parent):
     this->enableAutoScale();
     this->setAxisScale(xBottom, 0.0, ChannelNum - 1);
     this->setAxisScale(yLeft,   0.0, OverallYIniMax);
-    OASlider->setLabel("HaHaHa");
     connect(OASlider,       &DoubleSlider::maxValueChanged,
             this,           &GPlot::setSysMax);
     connect(OASlider,       &DoubleSlider::minValueChanged,

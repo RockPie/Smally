@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QFile>
+#include <QDebug>
 #include <QFileDialog>
 #include <QTextStream>
 #include <QMessageBox>
@@ -10,6 +11,7 @@
 #include <QFileDevice>
 #include "gdatabase.h"
 #include "gsetting.h"
+#include "newfile_dialog.h"
 
 class FileProcessor: public QObject
 {
@@ -34,6 +36,10 @@ private:
     Spectral *UserSpectral;
     QString UsedName;
     QWidget *WidgetBuff;
+
+private slots:
+    void setNucName(QString input);
+    void setNucNum(int input);
 
 };
 

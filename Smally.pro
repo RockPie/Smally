@@ -42,7 +42,8 @@ SOURCES += \
     gthread.cpp \
     gfile.cpp \
     gpaintingsystem.cpp \
-    gclient.cpp
+    gclient.cpp \
+    newfile_dialog.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -53,10 +54,12 @@ HEADERS += \
     gthread.h \
     gfile.h \
     gpaintingsystem.h \
-    gclient.h
+    gclient.h \
+    newfile_dialog.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    newfile_dialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

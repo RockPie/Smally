@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QTextStream>
+#include <QTime>
 #include "gsetting.h"
 
 class TimeThread: public QThread
@@ -42,16 +43,21 @@ class DataEngine: public QThread
 {
     Q_OBJECT
 public:
-    explicit DataEngine(QObject *parent);
+    explicit DataEngine(QObject *parent = nullptr);
+    ~DataEngine();
     QMutex pause;
 
 public slots:
+    void setDataNum(int input);
 
 protected:
     void run();
 
 private:
-    int *OriginData;
+    void ReadtoInt(QString fname, int pos);
+    int **OriginData;
+    int DataNum;
+    long long int Databuffer[ChannelNum];
 
 signals:
     void SimulateEvent(int Channel);

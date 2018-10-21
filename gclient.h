@@ -18,6 +18,8 @@ public slots:
     void readMessage();
     void onDisconnected();
     void displayError(QAbstractSocket::SocketError);
+
+    //Slots for MainWindow Operation
     void setHostName(QString str);
     void setPortNum(QString str);
     void disconnect();
@@ -34,7 +36,6 @@ signals:
 private:
     QTcpSocket *GtcpSocket;
     QString GtcpMessage;
-    quint16 BlockSize;
 
     QString hostName;
     quint16 portNum;

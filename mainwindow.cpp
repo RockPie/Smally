@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     flagYAxisLog = false;
     flagXAxisLog = false;
     isLinked = false;
+    isSimSource = true;
 
     SmallySpectral    = new Spectral(this);
     SmallyOverallPlot = new OverallPlot(this);
@@ -34,16 +35,6 @@ MainWindow::MainWindow(QWidget *parent) :
     SmallyOverallPlot->setSizePolicy(OAPlotPolicy);
     ui->LeftTool->setSizePolicy(LeftToolPolicy);
 
-    //Set splitter line style
-    /*
-    ui->splitter->setStyleSheet(
-                "QSplitter::handle{background-color:gray}");
-    ui->splitter->setHandleWidth(1);
-    QSplitterHandle *handle = ui->splitter->handle(2);
-    if(handle)
-        handle->setFixedHeight(1);
-    */
-
     //Add component to widget
     ui->MidLay->addWidget(SmallyOverallPlot->OASlider);
     ui->MidLay->addWidget(SmallyOverallPlot);
@@ -57,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     SmallyOverallPlot->setTitle(CurveTitle);
 
     //Set size of Left, Mid and Right layout
-    ui->splitter->setStretchFactor(0,6);
+    ui->splitter->setStretchFactor(0,8);
     ui->splitter->setStretchFactor(1,1);
     ui->splitter_2->setStretchFactor(0,1);
     ui->splitter_2->setStretchFactor(1,3);
@@ -66,10 +57,15 @@ MainWindow::MainWindow(QWidget *parent) :
     /***Connect Slots and Signals***/
     connect(ui->AutoBox,        &QCheckBox::clicked,
             SmallyOverallPlot,  &OverallPlot::setAutoScale);
-    connect(ui->ThreadBox,      &QCheckBox::clicked,
-            SmallyMainThread,   &TimeThread::setTimeThread);
 
     //Set action button
+    connect(ui->actionClear,    &QAction::triggered,
+            SmallySpectral,     &Spectral::Reset);
+    connect(ui->actionStart,    &QAction::triggered,
+            SmallyMainThread,   &TimeThread::startTimeThread , Qt::QueuedConnection);
+    connect(ui->actionPause,    &QAction::triggered,
+            SmallyMainThread,   &TimeThread::pauseTimeThread , Qt::QueuedConnection);
+
     connect(ui->actionStart,    &QAction::triggered,
             ui->actionPause,    &QAction::setDisabled);
     connect(ui->actionStart,    &QAction::triggered,
@@ -96,16 +92,10 @@ MainWindow::MainWindow(QWidget *parent) :
             StatusLight,        &GGuideLight::setRed);
     connect(ui->actionClear,    &QAction::triggered,
             this,               &MainWindow::showSYScleared);
-
-    connect(ui->actionClear,    &QAction::triggered,
-            SmallySpectral,     &Spectral::Reset);
-    connect(ui->actionStart,    &QAction::triggered,
-            SmallyMainThread,   &TimeThread::startTimeThread , Qt::QueuedConnection);
-    connect(ui->actionPause,    &QAction::triggered,
-            SmallyMainThread,   &TimeThread::pauseTimeThread , Qt::QueuedConnection);
-
-    connect(SmallySpectral,     &Spectral::Changed,
+    connect(SmallySpectral,     &Spectral::SpecChanged,
             this,               &MainWindow::showSpectral);
+    connect(SmallySpectral,     &Spectral::NucChanged,
+            this,               &MainWindow::updatePlotTitle);
 
     connect(ui->actionNew,      &QAction::triggered,
             SmallyFileSys,      &FileProcessor::creatFile);
@@ -121,8 +111,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //Set refresh
     connect(SmallyMainThread,   &TimeThread::Timeout50ms,
             this,               &MainWindow::showSpectral , Qt::QueuedConnection);
-    connect(SmallyMainThread,   &TimeThread::Timeout50ms,
-            this,               &MainWindow::setDataSeries , Qt::QueuedConnection);
+
     //Link logbox
     connect(ui->LogXBox,        &QCheckBox::clicked,
             this,               &MainWindow::setXLogAxis);
@@ -218,6 +207,10 @@ MainWindow::MainWindow(QWidget *parent) :
             SmallyClient,       &GNetwork::newConnect , Qt::QueuedConnection);
     connect(this,               &MainWindow::stopLink,
             SmallyClient,       &GNetwork::disconnect , Qt::QueuedConnection);
+    connect(ui->SourcecomboBox, &QComboBox::currentTextChanged,
+            this,               &MainWindow::setSourceType);
+    connect(ui->SimcomboBox,    SIGNAL(currentIndexChanged(int)),
+            DataSource,         SLOT(setDataNum(int)));
 
     qDebug()<<"Signals and slots connected";
 
@@ -237,12 +230,13 @@ MainWindow::MainWindow(QWidget *parent) :
     this->showHostDisconnected();
     ui->hostlineEdit->setText("localhost");
     ui->portlineEdit->setText("6666");
+    setSourceType("模拟信号源");
 }
 
 MainWindow::~MainWindow()
 {
     SmallyClient->deleteLater();
-    delete DataSource;
+    DataSource->deleteLater();
     delete StatusLight;
     delete USBLight;
     delete SmallyFileSys;
@@ -256,7 +250,6 @@ void MainWindow::showSpectral(){
     SmallyOverallPlot->OADataReceive(
                 SmallySpectral->PointOAOutput(flagXAxisLog,
                                               flagYAxisLog));
-    //qDebug()<<"Updated";
 }
 
 void MainWindow::setYLogAxis(bool isLog){
@@ -267,22 +260,18 @@ void MainWindow::setXLogAxis(bool isLog){
     flagXAxisLog = isLog;
 }
 
-void MainWindow::setDataSeries()
-{
-    uint buff = 0;
-    for(int counter = 0; counter < 1000; counter++)
-    {
-        buff = (rand() % (1023-0+1))+ 0;
-        SmallySpectral->ReceiveCount(buff);
-    }
+void MainWindow::setDataSeries(int val){
+    SmallySpectral->ReceiveCount(uint(val));
 }
 
 void MainWindow::showSYSstarted(){
+    DataSource->pause.unlock();
     StatusInfo->setText("Collecting Started");
     StatusInfo->update();
 }
 
 void MainWindow::showSYSpaused(){
+    DataSource->pause.lock();
     StatusInfo->setText("Collecting Paused");
     StatusInfo->update();
 }
@@ -323,6 +312,33 @@ void MainWindow::changeButton()
         isLinked = true;
         emit startLink();
     }
+}
+
+void MainWindow::setSourceType(QString type)
+{
+    if(type == "模拟信号源")
+    {
+        connect(DataSource,         &DataEngine::SimulateEvent,
+                this,               &MainWindow::setDataSeries , Qt::QueuedConnection);
+        ui->linkButton->setEnabled(false);
+        SmallySpectral->setElement("Example");
+        SmallySpectral->setNucNum(0);
+        ui->SimcomboBox->setEnabled(true);
+    }
+    else if(type == "外部服务器")
+    {
+        disconnect(DataSource,         &DataEngine::SimulateEvent,
+                   this,               &MainWindow::setDataSeries);
+        ui->linkButton->setEnabled(true);
+        SmallySpectral->setElement("Unknown");
+        SmallySpectral->setNucNum(0);
+        ui->SimcomboBox->setEnabled(false);
+    }
+}
+
+void MainWindow::updatePlotTitle(){
+    SmallyOverallPlot->setTitle(SmallySpectral->Element + "-"
+                                + QString::number(SmallySpectral->NucleonNum));
 }
 
 

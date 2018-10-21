@@ -3,7 +3,6 @@
 GNetwork::GNetwork(QObject *parent)
     :QThread (parent)
     ,GtcpMessage(QString())
-    ,BlockSize(0)
     ,hostName(QString())
     ,portNum(0)   {
 }
@@ -18,20 +17,6 @@ GNetwork::~GNetwork()
 
 void GNetwork::readMessage()
 {
-    /*
-    QDataStream inStream(GtcpSocket);
-    //Set Stream Version, which must be same as server
-    inStream.setVersion(QDataStream::Qt_5_0);
-    if(BlockSize == 0)  //if just begins
-    {
-        if(GtcpSocket->bytesAvailable() < int(sizeof (quint16)))
-            return;
-        inStream>>BlockSize;
-    }
-    //If didn't get all the data
-    if(GtcpSocket->bytesAvailable() < BlockSize)
-        return;
-    inStream>>GtcpMessage;*/
     QByteArray buffer;
     buffer = GtcpSocket->readAll();
     if(!buffer.isEmpty())
@@ -53,9 +38,12 @@ void GNetwork::run()
             this,           &GNetwork::displayError, Qt::DirectConnection);
     connect(GtcpSocket,     &QTcpSocket::disconnected,
             this,           &GNetwork::onDisconnected);
+    //When user start connection
     while(!isThreadStopped)
     {
+        //Turn into Connection Mode
         emit errorMet("Connecting...");
+        //If TCPSocket is deleted
         if(!GtcpSocket)
         {
             GtcpSocket = new QTcpSocket();
@@ -67,22 +55,24 @@ void GNetwork::run()
             connect(GtcpSocket,     &QTcpSocket::disconnected,
                     this,           &GNetwork::onDisconnected);
         }
-        qDebug()<<"Running_2";
+ //       qDebug()<<"Running_2";
+        //If there is no connection set
         if(!isConnectionOk)
         {
-            BlockSize = 0;
-            qDebug()<<"connect";
+//            qDebug()<<"connect";
             GtcpSocket->connectToHost(hostName, portNum, QIODevice::ReadOnly);
             qDebug()<<"Waiting...";
             isConnectionOk = GtcpSocket->waitForConnected(3000);
         }
 //        qDebug()<<"Running_3";
+        //Retry
         if(!isConnectionOk)
             continue;
+        //Send Success Signal
         emit newConnectionSet();
+        //Wait for Data Input
         GtcpSocket->waitForReadyRead(5000);
-
-        //sleep(1000);
+        //After this we may get error signal because of timeout event
     }
 }
 
@@ -94,12 +84,12 @@ void GNetwork::displayError(QAbstractSocket::SocketError)
 
 void GNetwork::setHostName(QString str){
     hostName = str;
-    qDebug()<<str;
+//    qDebug()<<str;
 }
 
 void GNetwork::setPortNum(QString str){
     portNum = quint16(str.toUInt());
-    qDebug()<<portNum;
+//    qDebug()<<portNum;
 }
 
 void GNetwork::onDisconnected(){
@@ -115,6 +105,7 @@ void GNetwork::newConnect()
 
 void GNetwork::disconnect()
 {
+    GtcpSocket->deleteLater();
     isThreadStopped = true;
     emit connectionDisabled();
 }

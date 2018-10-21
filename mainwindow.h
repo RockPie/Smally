@@ -40,6 +40,7 @@ private:
     bool flagYAxisLog;
     bool flagXAxisLog;
     bool isLinked;
+    bool isSimSource;
 
 signals:
     void startLink();
@@ -47,9 +48,10 @@ signals:
 
 private slots:
     void showSpectral();
+    void updatePlotTitle();
     void setYLogAxis(bool isLog);
     void setXLogAxis(bool isLog);
-    void setDataSeries();
+    void setDataSeries(int val);
 
     void showSYSstarted();
     void showSYSpaused();
@@ -60,6 +62,8 @@ private slots:
     void showLinkError(QString info);
 
     void changeButton();
+
+    void setSourceType(QString type);
 };
 
 #endif // MAINWINDOW_H
