@@ -60,7 +60,7 @@ void GNetwork::run()
         if(!isConnectionOk)
         {
 //            qDebug()<<"connect";
-            GtcpSocket->connectToHost(hostName, portNum, QIODevice::ReadOnly);
+            GtcpSocket->connectToHost(hostName, portNum);
             qDebug()<<"Waiting...";
             isConnectionOk = GtcpSocket->waitForConnected(3000);
         }

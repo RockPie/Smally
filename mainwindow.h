@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QtGui>
 #include <windows.h>
+#include <QTime>
 #include "gplot.h"
 #include "gdatabase.h"
 #include "gfile.h"
@@ -37,10 +38,12 @@ private:
     QLabel *StatusInfo;
     DataEngine *DataSource;
     GNetwork *SmallyClient;
+    QTime TimeBuffer;
     bool flagYAxisLog;
     bool flagXAxisLog;
     bool isLinked;
     bool isSimSource;
+    bool isCountingDown;
 
 signals:
     void startLink();
@@ -52,6 +55,8 @@ private slots:
     void setYLogAxis(bool isLog);
     void setXLogAxis(bool isLog);
     void setDataSeries(int val);
+
+    void stopWatch();
 
     void showSYSstarted();
     void showSYSpaused();

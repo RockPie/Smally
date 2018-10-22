@@ -15,6 +15,7 @@ public:
     explicit TimeThread(QObject *parent);
     ~TimeThread();
     inline void stopMain();
+    inline void stopAcc();
 
 public slots:
     void MainTimeoutHandle();
@@ -38,6 +39,14 @@ signals:
     void Timeout100ms();
 
 };
+
+inline void TimeThread::stopMain(){
+    MainTimer->stop();
+}
+
+inline void TimeThread::stopAcc(){
+    AccurateTimer->stop();
+}
 
 class DataEngine: public QThread
 {

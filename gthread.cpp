@@ -30,6 +30,7 @@ void TimeThread::runMain()
 {
     TimerCounter = 0;
     MainTimer->start();
+    AccurateTimer->start();
     exec();
 }
 
@@ -49,16 +50,15 @@ void TimeThread::MainTimeoutHandle()
     }
 }
 
-inline void TimeThread::stopMain(){
-    MainTimer->stop();
-}
-
 void TimeThread::setTimeThread(bool startThread)
 {
     if(startThread)
         this->runMain();
     else
+    {
         this->stopMain();
+        this->stopAcc();
+    }
 }
 
 void TimeThread::AccurateTimeoutHandle(){
@@ -70,7 +70,8 @@ void TimeThread::startTimeThread(){
 }
 
 void TimeThread::pauseTimeThread(){
-    stopMain();
+    this->stopMain();
+    this->stopAcc();
 }
 
 DataEngine::DataEngine(QObject *parent):

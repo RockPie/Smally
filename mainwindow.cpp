@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     flagXAxisLog = false;
     isLinked = false;
     isSimSource = true;
+    isCountingDown = false;
 
     SmallySpectral    = new Spectral(this);
     SmallyOverallPlot = new OverallPlot(this);
@@ -39,8 +40,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->MidLay->addWidget(SmallyOverallPlot->OASlider);
     ui->MidLay->addWidget(SmallyOverallPlot);
     ui->MidLay->addWidget(SmallyOverallPlot->AttachedPlot);
-    ui->statusBar->addWidget(USBLight);
-    ui->statusBar->addWidget(TCPInfo);
+    ui->statusBar->addPermanentWidget(USBLight);
+    ui->statusBar->addPermanentWidget(TCPInfo);
     ui->statusBar->addWidget(StatusLight);
     ui->statusBar->addWidget(StatusInfo);
 
@@ -111,6 +112,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //Set refresh
     connect(SmallyMainThread,   &TimeThread::Timeout50ms,
             this,               &MainWindow::showSpectral , Qt::QueuedConnection);
+    connect(SmallyMainThread,   &TimeThread::Timeoutms,
+            this,               &MainWindow::stopWatch);
 
     //Link logbox
     connect(ui->LogXBox,        &QCheckBox::clicked,
@@ -268,6 +271,11 @@ void MainWindow::showSYSstarted(){
     DataSource->pause.unlock();
     StatusInfo->setText("Collecting Started");
     StatusInfo->update();
+    TimeBuffer = ui->MaintimeEdit->time();
+    if(TimeBuffer == QTime(0,0,0,0))
+        isCountingDown = false;
+    else
+        isCountingDown = true;
 }
 
 void MainWindow::showSYSpaused(){
@@ -279,6 +287,7 @@ void MainWindow::showSYSpaused(){
 void MainWindow::showSYScleared(){
     StatusInfo->setText("Data Cleaned");
     StatusInfo->update();
+    ui->MaintimeEdit->setTime(TimeBuffer);
 }
 
 void MainWindow::showHostLinked(){
@@ -339,6 +348,20 @@ void MainWindow::setSourceType(QString type)
 void MainWindow::updatePlotTitle(){
     SmallyOverallPlot->setTitle(SmallySpectral->Element + "-"
                                 + QString::number(SmallySpectral->NucleonNum));
+}
+
+void MainWindow::stopWatch()
+{
+    if(isCountingDown)
+    {
+        ui->MaintimeEdit->setTime(ui->MaintimeEdit->time().addMSecs(-1));
+        if(ui->MaintimeEdit->time() == QTime(0,0,0,0))
+            emit ui->actionPause->triggered();
+    }
+    else
+    {
+        ui->MaintimeEdit->setTime(ui->MaintimeEdit->time().addMSecs(1));
+    }
 }
 
 
