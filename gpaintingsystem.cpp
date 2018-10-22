@@ -88,14 +88,14 @@ void GPlot::paintEvent(QPaintEvent *event)
                (y_buff <= yMax && y_buff >= yMin))
             {
                 painter.drawPoint(
-                    int((x_buff - xMin) / (xMax - xMin) * this->width()),
-                    int((yMax - y_buff) / (yMax - yMin) * this->height()));
+                    qRound((x_buff - xMin) / (xMax - xMin) * this->width()),
+                    qRound((yMax - y_buff) / (yMax - yMin) * this->height()));
             }
         }
     }
     else
     {
-        if(LineFilter == NoFilter)
+        if     (LineFilter == NoFilter)
         {
             double x_buff[2] = {0}, y_buff[2] = {0};
             x_buff[1] = double(Data->value(0).x());
@@ -114,20 +114,112 @@ void GPlot::paintEvent(QPaintEvent *event)
                            (y_buff[0] <= yMax && y_buff[0] >= yMin) == false)
                             continue;
                     painter.drawLine(
-                        int((x_buff[0] - xMin) / (xMax - xMin) * this->width()),
-                        int((yMax - y_buff[0]) / (yMax - yMin) * this->height()),
-                        int((x_buff[1] - xMin) / (xMax - xMin) * this->width()),
-                        int((yMax - y_buff[1]) / (yMax - yMin) * this->height()));
+                        qRound((x_buff[0] - xMin) / (xMax - xMin) * this->width()),
+                        qRound((yMax - y_buff[0]) / (yMax - yMin) * this->height()),
+                        qRound((x_buff[1] - xMin) / (xMax - xMin) * this->width()),
+                        qRound((yMax - y_buff[1]) / (yMax - yMin) * this->height()));
                 }
             }
         }
         else if(LineFilter == Three_Points)
         {
-
+            double x_buff[2] = {0}, y_buff[5] = {0};
+            x_buff[1] = double(Data->value(0).x());
+            y_buff[1] = double(Data->value(0).y());
+            for(int counter = 1; counter < Data->length() - 1; counter++)
+            {
+                x_buff[0] = x_buff[1];
+                x_buff[1] = double(Data->value(counter).x());
+                y_buff[0] = y_buff[1];
+                y_buff[2] = double(Data->value(counter - 1).y());
+                y_buff[3] = double(Data->value(counter).y());
+                y_buff[4] = double(Data->value(counter + 1).y());
+                y_buff[1] = (y_buff[4] + y_buff[3] + y_buff[2]) / 3.0;
+                if((x_buff[1] <= xMax && x_buff[1] >= xMin) &&
+                   (y_buff[1] <= yMax && y_buff[1] >= yMin))
+                {
+                    if(counter == 1)
+                        if((x_buff[0] <= xMax && x_buff[0] >= xMin) &&
+                          (y_buff[0] <= yMax && y_buff[0] >= yMin) == false)
+                            continue;
+                    painter.drawLine(
+                        qRound((x_buff[0] - xMin) / (xMax - xMin) * this->width()),
+                        qRound((yMax - y_buff[0]) / (yMax - yMin) * this->height()),
+                        qRound((x_buff[1] - xMin) / (xMax - xMin) * this->width()),
+                        qRound((yMax - y_buff[1]) / (yMax - yMin) * this->height()));
+                }
+            }
+            x_buff[0] = x_buff[1];
+            x_buff[1] = double(Data->value(Data->length() - 1).x());
+            y_buff[0] = y_buff[1];
+            y_buff[1] = double(Data->value(Data->length() - 1).y());
+            if((x_buff[1] <= xMax && x_buff[1] >= xMin) &&
+               (y_buff[4] <= yMax && y_buff[4] >= yMin))
+                painter.drawLine(
+                    qRound((x_buff[0] - xMin) / (xMax - xMin) * this->width()),
+                    qRound((yMax - y_buff[0]) / (yMax - yMin) * this->height()),
+                    qRound((x_buff[1] - xMin) / (xMax - xMin) * this->width()),
+                    qRound((yMax - y_buff[1]) / (yMax - yMin) * this->height()));
         }
         else if(LineFilter == Five_Points)
         {
-
+            double x_buff[2] = {0}, y_buff[7] = {0};
+            x_buff[0] = double(Data->value(0).x());
+            x_buff[1] = double(Data->value(1).x());
+            y_buff[0] = double(Data->value(0).y());
+            y_buff[1] = double(Data->value(1).y());
+            if((x_buff[1] <= xMax && x_buff[1] >= xMin) &&
+              (y_buff[1] <= yMax && y_buff[1] >= yMin))
+            {
+                if((x_buff[0] <= xMax && x_buff[0] >= xMin) &&
+                  (y_buff[0] <= yMax && y_buff[0] >= yMin) == true)
+                    painter.drawLine(
+                            qRound((x_buff[0] - xMin) / (xMax - xMin) * this->width()),
+                            qRound((yMax - y_buff[0]) / (yMax - yMin) * this->height()),
+                            qRound((x_buff[1] - xMin) / (xMax - xMin) * this->width()),
+                            qRound((yMax - y_buff[1]) / (yMax - yMin) * this->height()));
+            }
+            for(int counter = 2; counter < Data->length() - 2; counter++)
+            {
+                x_buff[0] = x_buff[1];
+                x_buff[1] = double(Data->value(counter).x());
+                y_buff[0] = y_buff[1];
+                y_buff[2] = double(Data->value(counter - 2).y());
+                y_buff[3] = double(Data->value(counter - 1).y());
+                y_buff[4] = double(Data->value(counter).y());
+                y_buff[5] = double(Data->value(counter + 1).y());
+                y_buff[6] = double(Data->value(counter + 2).y());
+                y_buff[1] = (y_buff[6] + y_buff[5] + y_buff[4] + y_buff[3] + y_buff[2]) / 5.0;
+                if((x_buff[1] <= xMax && x_buff[1] >= xMin) &&
+                   (y_buff[1] <= yMax && y_buff[1] >= yMin))
+                    painter.drawLine(
+                        qRound((x_buff[0] - xMin) / (xMax - xMin) * this->width()),
+                        qRound((yMax - y_buff[0]) / (yMax - yMin) * this->height()),
+                        qRound((x_buff[1] - xMin) / (xMax - xMin) * this->width()),
+                        qRound((yMax - y_buff[1]) / (yMax - yMin) * this->height()));
+            }
+            x_buff[0] = x_buff[1];
+            x_buff[1] = double(Data->value(Data->length() - 2).x());
+            y_buff[0] = y_buff[1];
+            y_buff[1] = double(Data->value(Data->length() - 2).y());
+            if((x_buff[1] <= xMax && x_buff[1] >= xMin) &&
+               (y_buff[4] <= yMax && y_buff[4] >= yMin))
+                painter.drawLine(
+                    qRound((x_buff[0] - xMin) / (xMax - xMin) * this->width()),
+                    qRound((yMax - y_buff[0]) / (yMax - yMin) * this->height()),
+                    qRound((x_buff[1] - xMin) / (xMax - xMin) * this->width()),
+                    qRound((yMax - y_buff[1]) / (yMax - yMin) * this->height()));
+            x_buff[0] = x_buff[1];
+            x_buff[1] = double(Data->value(Data->length() - 1).x());
+            y_buff[0] = y_buff[1];
+            y_buff[1] = double(Data->value(Data->length() - 1).y());
+            if((x_buff[1] <= xMax && x_buff[1] >= xMin) &&
+               (y_buff[4] <= yMax && y_buff[4] >= yMin))
+                painter.drawLine(
+                    qRound((x_buff[0] - xMin) / (xMax - xMin) * this->width()),
+                    qRound((yMax - y_buff[0]) / (yMax - yMin) * this->height()),
+                    qRound((x_buff[1] - xMin) / (xMax - xMin) * this->width()),
+                    qRound((yMax - y_buff[1]) / (yMax - yMin) * this->height()));
         }
         else if(LineFilter == HighAccuracy)
         {
@@ -162,12 +254,12 @@ void GPlot::paintEvent(QPaintEvent *event)
     {
         painter.setPen(SysMinPen);
         painter.drawLine(
-            int((SysMin - xMin) / (xMax - xMin) * this->width()), 0,
-            int((SysMin - xMin) / (xMax - xMin) * this->width()), this->height());
+            qRound((SysMin - xMin) / (xMax - xMin) * this->width()), 0,
+            qRound((SysMin - xMin) / (xMax - xMin) * this->width()), this->height());
         painter.setPen(SysMaxPen);
         painter.drawLine(
-            int((SysMax - xMin) / (xMax - xMin) * this->width()), 0,
-            int((SysMax - xMin) / (xMax - xMin) * this->width()), this->height());
+            qRound((SysMax - xMin) / (xMax - xMin) * this->width()), 0,
+            qRound((SysMax - xMin) / (xMax - xMin) * this->width()), this->height());
     }
 
 }
