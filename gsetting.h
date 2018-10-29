@@ -15,7 +15,8 @@
 #define GridNum 10
 
 #define RecWidth 45
-#define RecLength 120
+#define RecLength 140
+#define HalfWidth 20
 
 #define FileInfo "Smally Spectral version 0.01"
 

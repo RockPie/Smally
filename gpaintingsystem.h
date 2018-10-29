@@ -52,6 +52,7 @@ public slots:
     void setMaxBorder(double val);
     void setMinBorder(double val);
     void setFilter(FilterType type);
+    void updateMark();
 
 protected:
     void enterEvent(QEvent *event);
@@ -78,11 +79,14 @@ private:
     QWidget* parentWidget;
     QPen CurvePen, SysMinPen, SysMaxPen, AxisPen, RubberPen,
          InfoBoxPen, InfoPen, MidLinePen;
+    QBrush InfoBoxBrush;
     QFont InfoFont;
     bool isDotDisplay = false;
     double xMin = 0, xMax = 0;
     double yMin = 0, yMax = 0;
     int xLoc = 0, yLoc = 0;
+    int CrossMarkLoc = 0;
+    int delayCount = 10;
 
 
     double SysMin = 0, SysMax = 0;
@@ -93,9 +97,19 @@ private:
     bool drawRubberBand = false;
     bool isMidLine = false;
     bool isMouseIn = false;
+    bool isMarkIncreasing = false;
+    bool isMarkDecreasing = false;
 
     bool isDraggingMin = false;
     bool isDraggingMax = false;
+
+    int Nearest_pixel_x = 0, Nearest_pixel_y = 0;
+    double Nearest_origin_x = 0, Nearest_origin_y = 0;
+    int Nearest_Num = 0;
+    double Nearest_distance = ChannelNum * ChannelNum;
+    double distancebuffer;
+
+    bool isRubber = true;
     FilterType LineFilter = NoFilter;
 
 };

@@ -110,10 +110,13 @@ MainWindow::MainWindow(QWidget *parent) :
             this,               &MainWindow::showSpectral);
 
     //Set refresh
-    connect(SmallyMainThread,   &TimeThread::Timeout10ms,
+    connect(SmallyMainThread,   &TimeThread::Timeout20ms,
             this,               &MainWindow::showSpectral , Qt::QueuedConnection);
+    connect(SmallyMainThread,   &TimeThread::Timeout100ms,
+            SmallyOverallPlot->AttachedPlot,
+                                &GPlot::updateMark, Qt::QueuedConnection);
     connect(SmallyMainThread,   &TimeThread::Timeoutms,
-            this,               &MainWindow::stopWatch);
+            this,               &MainWindow::stopWatch , Qt::QueuedConnection);
 
     //Link logbox
     connect(ui->LogXBox,        &QCheckBox::clicked,
@@ -182,6 +185,16 @@ MainWindow::MainWindow(QWidget *parent) :
 //    connect(SmallyOverallPlot->OASlider,
 //                                &DoubleSlider::minValueChanged,
 //            ui->XminSpinBox,    &QDoubleSpinBox::setValue);
+
+    connect(SmallyOverallPlot,  &GPlot::MouseSysMax,
+            ui->XmaxSpinBox,    &QDoubleSpinBox::setValue);
+    connect(SmallyOverallPlot,  &GPlot::MouseSysMin,
+            ui->XminSpinBox,    &QDoubleSpinBox::setValue);
+
+    connect(ui->XmaxSpinBox,    SIGNAL(valueChanged(double)),
+            SmallyOverallPlot,  SLOT(setSysMax(double)));
+    connect(ui->XminSpinBox,    SIGNAL(valueChanged(double)),
+            SmallyOverallPlot,  SLOT(setSysMin(double)));
 
     //Link Plot Info
     connect(SmallyOverallPlot,  &GPlot::MaxCountChanged,

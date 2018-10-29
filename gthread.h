@@ -36,6 +36,7 @@ private:
 signals:
     void Timeoutms();
     void Timeout10ms();
+    void Timeout20ms();
     void Timeout50ms();
     void Timeout100ms();
 

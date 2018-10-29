@@ -42,6 +42,8 @@ void TimeThread::MainTimeoutHandle()
     else
         TimerCounter++;
     emit Timeout10ms();
+    if(TimerCounter % 2 == 0)
+        emit Timeout20ms();
     if(TimerCounter % 5 == 0)
     {
         emit Timeout50ms();

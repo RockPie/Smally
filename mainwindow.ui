@@ -41,7 +41,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>348</width>
+             <width>270</width>
              <height>431</height>
             </rect>
            </property>
@@ -224,7 +224,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>348</width>
+             <width>270</width>
              <height>431</height>
             </rect>
            </property>
@@ -325,7 +325,7 @@
             <enum>QDateTimeEdit::HourSection</enum>
            </property>
            <property name="displayFormat">
-            <string>HH:mm:ss.zz</string>
+            <string>HH:mm:ss.zzz</string>
            </property>
           </widget>
          </item>

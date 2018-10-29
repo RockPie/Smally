@@ -79,6 +79,8 @@ void OverallPlot::setXLogMode(bool isLog)
 //        OASlider->setMinValue(this->getSysMin());
 //        OASlider->setRange(0, ChannelNum - 1);
     }
+    emit MouseSysMax(this->getSysMax());
+    emit MouseSysMin(this->getSysMin());
     this->replot();
     AttachedPlot->replot();
 }

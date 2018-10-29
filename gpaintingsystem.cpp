@@ -39,6 +39,8 @@ GPlot::GPlot(QWidget* parent):
     MidLinePen.setWidth(2);
     MidLinePen.setStyle(Qt::DashDotLine);
 
+    InfoBoxBrush = QBrush(QColor(10,10,10));
+
 
     InfoFont = QFont("Arial", 11, QFont::Bold, true);
     InfoFont.setLetterSpacing(QFont::AbsoluteSpacing, 2);
@@ -71,11 +73,6 @@ void GPlot::paintEvent(QPaintEvent *event)
     double MaxYVal = Data->value(0).y();
     double MinYVal = Data->value(0).y();
 
-    int Nearest_pixel_x = 0, Nearest_pixel_y = 0;
-    double Nearest_origin_x = 0, Nearest_origin_y = 0;
-    double Nearest_distance = ChannelNum * ChannelNum;
-    double distancebuffer;
-
     for(int counter = 1; counter < Data->length(); counter++)
     {
         if(MaxYVal < Data->value(counter).y())
@@ -86,6 +83,13 @@ void GPlot::paintEvent(QPaintEvent *event)
 
     emit MaxCountChanged(QString::number(MaxYVal, 10,2));
     emit MinCountChanged(QString::number(MinYVal, 10,2));
+
+    Nearest_Num = 0;
+    Nearest_pixel_x = 0;
+    Nearest_pixel_y = 0;
+    Nearest_origin_x = 0;
+    Nearest_origin_y = 0;
+    Nearest_distance = ChannelNum * ChannelNum;
 
     //Adjust Axis Scale
     if(isAutoScale)
@@ -116,9 +120,11 @@ void GPlot::paintEvent(QPaintEvent *event)
             {
                 pixelbuff_x = qRound((x_buff - xMin) / (xMax - xMin) * this->width());
                 pixelbuff_y = qRound((yMax - y_buff) / (yMax - yMin) * this->height());
-                distancebuffer = pow((pixelbuff_x - xLoc), 2)+pow((pixelbuff_y - yLoc), 2);
+                //distancebuffer = pow((pixelbuff_x - xLoc), 2)+pow((pixelbuff_y - yLoc), 2);
+                distancebuffer = abs(pixelbuff_x - xLoc)+abs(pixelbuff_y - yLoc);
                 if(Nearest_distance > distancebuffer)
                 {
+                    Nearest_Num = counter;
                     Nearest_distance = distancebuffer;
                     Nearest_pixel_x = pixelbuff_x;
                     Nearest_pixel_y = pixelbuff_y;
@@ -153,9 +159,11 @@ void GPlot::paintEvent(QPaintEvent *event)
                             continue;
                     pixelbuff_x = qRound((x_buff[0] - xMin) / (xMax - xMin) * this->width());
                     pixelbuff_y = qRound((yMax - y_buff[0]) / (yMax - yMin) * this->height());
-                    distancebuffer = pow((pixelbuff_x - xLoc), 2)+pow((pixelbuff_y - yLoc), 2);
+                    //distancebuffer = pow((pixelbuff_x - xLoc), 2)+pow((pixelbuff_y - yLoc), 2);
+                    distancebuffer = abs(pixelbuff_x - xLoc)+abs(pixelbuff_y - yLoc);
                     if(Nearest_distance > distancebuffer)
                     {
+                        Nearest_Num = counter - 1;
                         Nearest_distance = distancebuffer;
                         Nearest_pixel_x = pixelbuff_x;
                         Nearest_pixel_y = pixelbuff_y;
@@ -172,6 +180,7 @@ void GPlot::paintEvent(QPaintEvent *event)
             distancebuffer = pow((pixelbuff_x - xLoc), 2)+pow((pixelbuff_y - yLoc), 2);
             if(Nearest_distance > distancebuffer)
             {
+                Nearest_Num = Data->length() - 1;
                 Nearest_distance = distancebuffer;
                 Nearest_pixel_x = pixelbuff_x;
                 Nearest_pixel_y = pixelbuff_y;
@@ -306,6 +315,7 @@ void GPlot::paintEvent(QPaintEvent *event)
                     distancebuffer = pow((pixelbuff_x - xLoc), 2)+pow((pixelbuff_y - yLoc), 2);
                     if(Nearest_distance > distancebuffer)
                     {
+                        Nearest_Num = counter - 1;
                         Nearest_distance = distancebuffer;
                         Nearest_pixel_x = pixelbuff_x;
                         Nearest_pixel_y = pixelbuff_y;
@@ -322,6 +332,7 @@ void GPlot::paintEvent(QPaintEvent *event)
             distancebuffer = pow((pixelbuff_x - xLoc), 2)+pow((pixelbuff_y - yLoc), 2);
             if(Nearest_distance > distancebuffer)
             {
+                Nearest_Num = Data->length() - 1;
                 Nearest_distance = distancebuffer;
                 Nearest_pixel_x = pixelbuff_x;
                 Nearest_pixel_y = pixelbuff_y;
@@ -329,11 +340,11 @@ void GPlot::paintEvent(QPaintEvent *event)
                 Nearest_origin_y = y_buff[1];
             }
         }
-
-
     }
 
-    if(drawRubberBand && (isDots || LineFilter == NoFilter || LineFilter == HighAccuracy) && isMouseIn)
+    /***    Draw Information Box    ***/
+    if(drawRubberBand && (isDots || LineFilter == NoFilter || LineFilter == HighAccuracy)
+            && isMouseIn && isRubber)
     {
         painter.setPen(RubberPen);
         painter.drawLine(Nearest_pixel_x, Nearest_pixel_y, xLoc, yLoc);
@@ -352,9 +363,40 @@ void GPlot::paintEvent(QPaintEvent *event)
         painter.drawRect(InfoBox);
         painter.setFont(InfoFont);
         painter.setPen(InfoPen);
-        QString info = "道址:" + QString::number(Nearest_origin_x) + "\n计数:" +
+        QString info = "横坐标:" + QString::number(Nearest_origin_x) + "\n纵坐标:" +
                        QString::number(Nearest_origin_y);
         painter.drawText(InfoBox, Qt::AlignLeft, info);
+    }
+
+    /***    Draw Cross Line ***/
+    if(drawRubberBand && !isRubber)
+    {
+        int xbuf = qRound((double(Data->value(CrossMarkLoc).x()) - xMin) / (xMax - xMin) * this->width());
+        int ybuf = qRound((yMax - double(Data->value(CrossMarkLoc).y())) / (yMax - yMin) * this->height());
+        painter.setPen(RubberPen);
+        painter.drawLine(0, ybuf, this->width(), ybuf);
+        painter.drawLine(xbuf, 0, xbuf, this->height());
+        QString xinfo = "道址：" + QString::number(CrossMarkLoc);
+        QString yinfo = "计数：" + QString::number(Data->value(CrossMarkLoc).y());
+        QRect xInfoBox;
+        QRect yInfoBox = QRect(this->width() - RecLength, ybuf - HalfWidth, RecLength, HalfWidth);
+//        painter.setPen(InfoBoxPen);
+//        painter.setBrush(InfoBoxBrush);
+//        painter.drawRect(xInfoBox);
+//        painter.drawRect(yInfoBox);
+        painter.setPen(InfoPen);
+        painter.setFont(InfoFont);
+        if(xbuf < this->width() - RecLength)
+        {
+             xInfoBox = QRect(xbuf, 0, RecLength, HalfWidth);
+             painter.drawText(xInfoBox, Qt::AlignLeft, xinfo);
+        }
+        else
+        {
+            xInfoBox = QRect(xbuf - RecLength, 0, RecLength, HalfWidth);
+            painter.drawText(xInfoBox, Qt::AlignRight, xinfo);
+        }
+        painter.drawText(yInfoBox, Qt::AlignRight, yinfo);
     }
 
     /***    Paint System Curve  ***/
@@ -472,13 +514,13 @@ void GPlot::mouseMoveEvent(QMouseEvent *event)
         if(isDraggingMax)
         {
              int real_x = int((double(event->pos().x()) * (xMax - xMin) / this->width()) + xMin);
-             if(abs(real_x - qRound(SysMax)) > 5)
+             if(abs(real_x - qRound(SysMax)) > 2 && real_x > SysMin)
                 emit MouseSysMax(double(real_x));
         }
         else if(isDraggingMin)
         {
             int real_x = int((double(event->pos().x()) * (xMax - xMin) / this->width()) + xMin);
-            if(abs(real_x - qRound(SysMin)) > 5)
+            if(abs(real_x - qRound(SysMin)) > 2 && real_x < SysMax)
                 emit MouseSysMin(double(real_x));
         }
     }
@@ -487,8 +529,9 @@ void GPlot::mouseMoveEvent(QMouseEvent *event)
 void GPlot::mousePressEvent(QMouseEvent *event)
 {
     event->accept();
-    if(isSysEnabled)
-        if(event->button() == Qt::LeftButton)
+    if(event->button() == Qt::LeftButton)
+    {
+        if(isSysEnabled)
         {
             int real_x = int((double(event->pos().x()) * (xMax - xMin) / this->width()) + xMin);
             int MaxDistance = abs(real_x - qRound(SysMax));
@@ -506,6 +549,32 @@ void GPlot::mousePressEvent(QMouseEvent *event)
                 emit MouseSysMin(double(real_x));
             }
         }
+        else if(drawRubberBand && !isRubber)
+        {
+            if(event->pos().x() > qRound((double(Data->value(CrossMarkLoc).x()) - xMin) / (xMax - xMin) * this->width()))
+            {
+                CrossMarkLoc++;
+                isMarkIncreasing = true;
+                isMarkDecreasing = false;
+            }
+            else
+            {
+                CrossMarkLoc--;
+                isMarkDecreasing = true;
+                isMarkIncreasing = false;
+            }
+        }
+    }
+    else if(event->button() == Qt::RightButton)
+    {
+        if(isRubber)
+        {
+            isRubber = false;
+            CrossMarkLoc = Nearest_Num;
+        }
+        else
+            isRubber = true;
+    }
 }
 
 void GPlot::mouseReleaseEvent(QMouseEvent *event)
@@ -513,6 +582,9 @@ void GPlot::mouseReleaseEvent(QMouseEvent *event)
     event->accept();
     isDraggingMax = false;
     isDraggingMin = false;
+    isMarkIncreasing = false;
+    isMarkDecreasing = false;
+    delayCount = 10;
 }
 
 void GPlot::enterEvent(QEvent *event)
@@ -528,5 +600,18 @@ void GPlot::leaveEvent(QEvent *event)
 {
     event->accept();
     isMouseIn = false;
+}
+
+void GPlot::updateMark()
+{
+    if(delayCount > 0)
+        delayCount--;
+    else
+    {
+        if(isMarkIncreasing)
+            CrossMarkLoc++;
+        else if(isMarkDecreasing)
+            CrossMarkLoc--;
+    }
 }
 
