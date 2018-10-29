@@ -14,6 +14,9 @@
 #define ScaleThresholdL 0.3
 #define GridNum 10
 
+#define RecWidth 45
+#define RecLength 120
+
 #define FileInfo "Smally Spectral version 0.01"
 
 

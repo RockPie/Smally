@@ -11,6 +11,8 @@ PartPlot::PartPlot(QWidget *parent):
     this->setAxisScale(yLeft,   0.0, OverallYIniMax);
     this->disableSysCurve();
     this->enableAutoScale();
+    this->setRubberBand(true);
+    this->setMidLine(true);
 }
 
 PartPlot::~PartPlot(){}
@@ -19,17 +21,21 @@ OverallPlot::OverallPlot(QWidget *parent):
     GPlot (parent)
 {
     AttachedPlot = new PartPlot(parent);
-    OASlider = new DoubleSlider(parent);
+//    OASlider = new DoubleSlider(parent);
     this->enableSysCurve();
     setSysMax(ChannelNum - 1);
     setSysMin(0);
     this->enableAutoScale();
     this->setAxisScale(xBottom, 0.0, ChannelNum - 1);
     this->setAxisScale(yLeft,   0.0, OverallYIniMax);
-    connect(OASlider,       &DoubleSlider::maxValueChanged,
+    this->setRubberBand(false);
+    this->setMidLine(false);
+    connect(this,           &GPlot::MouseSysMax,
             this,           &GPlot::setSysMax);
-    connect(OASlider,       &DoubleSlider::minValueChanged,
+    connect(this,           &GPlot::MouseSysMin,
             this,           &GPlot::setSysMin);
+
+
     connect(this,           &GPlot::SysMaxchanged,
             AttachedPlot,   &GPlot::setMaxBorder);
     connect(this,           &GPlot::SysMinchanged,
@@ -38,7 +44,7 @@ OverallPlot::OverallPlot(QWidget *parent):
 
 OverallPlot::~OverallPlot()
 {
-    delete OASlider;
+//    delete OASlider;
     delete AttachedPlot;
 }
 
@@ -57,21 +63,21 @@ void OverallPlot::setXLogMode(bool isLog)
         setSysMin(double(20) * qLn(this->getSysMin() + 1));
         setSysMax(double(20) * qLn(this->getSysMax() + 1));
         //The order of setting OASlider is important
-        OASlider->setSingleStep(0.01);
-        OASlider->setMinValue(this->getSysMin());
-        OASlider->setMaxValue(this->getSysMax());
+//        OASlider->setSingleStep(0.01);
+//        OASlider->setMinValue(this->getSysMin());
+//        OASlider->setMaxValue(this->getSysMax());
 
-        OASlider->setRange(0, LogChannel);
+//        OASlider->setRange(0, LogChannel);
     }
     else
     {
         setAxisScale(xBottom, 0.0, ChannelNum - 1);
         setSysMin(double(qRound((exp(0.05 * this->getSysMin())) - 1)));
         setSysMax(double(qRound((exp(0.05 * this->getSysMax())) - 1)));
-        OASlider->setSingleStep(1.0);
-        OASlider->setMaxValue(this->getSysMax());
-        OASlider->setMinValue(this->getSysMin());
-        OASlider->setRange(0, ChannelNum - 1);
+//        OASlider->setSingleStep(1.0);
+//        OASlider->setMaxValue(this->getSysMax());
+//        OASlider->setMinValue(this->getSysMin());
+//        OASlider->setRange(0, ChannelNum - 1);
     }
     this->replot();
     AttachedPlot->replot();

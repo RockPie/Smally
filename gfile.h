@@ -11,6 +11,7 @@
 #include <QFileDevice>
 #include "gdatabase.h"
 #include "gsetting.h"
+#include "gplot.h"
 #include "newfile_dialog.h"
 
 class FileProcessor: public QObject
@@ -18,7 +19,8 @@ class FileProcessor: public QObject
     Q_OBJECT
 public:
     explicit FileProcessor(QWidget *parent,
-                           Spectral *inputSpec);
+                           Spectral *inputSpec,
+                           OverallPlot *inputplot = nullptr);
     ~FileProcessor();
 
 public slots:
@@ -36,6 +38,7 @@ private:
     Spectral *UserSpectral;
     QString UsedName;
     QWidget *WidgetBuff;
+    OverallPlot *UserPlot;
 
 private slots:
     void setNucName(QString input);

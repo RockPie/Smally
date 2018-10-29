@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->LeftTool->setSizePolicy(LeftToolPolicy);
 
     //Add component to widget
-    ui->MidLay->addWidget(SmallyOverallPlot->OASlider);
+//    ui->MidLay->addWidget(SmallyOverallPlot->OASlider);
     ui->MidLay->addWidget(SmallyOverallPlot);
     ui->MidLay->addWidget(SmallyOverallPlot->AttachedPlot);
     ui->statusBar->addPermanentWidget(USBLight);
@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->statusBar->addWidget(StatusInfo);
 
     CurveTitle = SmallySpectral->getInfo();
-    SmallyOverallPlot->setTitle(CurveTitle);
+//    SmallyOverallPlot->setTitle(CurveTitle);
 
     //Set size of Left, Mid and Right layout
     ui->splitter->setStretchFactor(0,8);
@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionStart,    &QAction::triggered,
             SmallyMainThread,   &TimeThread::startTimeThread , Qt::QueuedConnection);
     connect(ui->actionPause,    &QAction::triggered,
-            SmallyMainThread,   &TimeThread::pauseTimeThread , Qt::QueuedConnection);
+            SmallyMainThread,   &TimeThread::pauseAccurateThread , Qt::QueuedConnection);
 
     connect(ui->actionStart,    &QAction::triggered,
             ui->actionPause,    &QAction::setDisabled);
@@ -95,8 +95,8 @@ MainWindow::MainWindow(QWidget *parent) :
             this,               &MainWindow::showSYScleared);
     connect(SmallySpectral,     &Spectral::SpecChanged,
             this,               &MainWindow::showSpectral);
-    connect(SmallySpectral,     &Spectral::NucChanged,
-            this,               &MainWindow::updatePlotTitle);
+//    connect(SmallySpectral,     &Spectral::NucChanged,
+//            this,               &MainWindow::updatePlotTitle);
 
     connect(ui->actionNew,      &QAction::triggered,
             SmallyFileSys,      &FileProcessor::creatFile);
@@ -110,7 +110,7 @@ MainWindow::MainWindow(QWidget *parent) :
             this,               &MainWindow::showSpectral);
 
     //Set refresh
-    connect(SmallyMainThread,   &TimeThread::Timeout50ms,
+    connect(SmallyMainThread,   &TimeThread::Timeout10ms,
             this,               &MainWindow::showSpectral , Qt::QueuedConnection);
     connect(SmallyMainThread,   &TimeThread::Timeoutms,
             this,               &MainWindow::stopWatch);
@@ -170,18 +170,18 @@ MainWindow::MainWindow(QWidget *parent) :
             SmallyOverallPlot,  &OverallPlot::setHighAccuracy);
 
     //Link double slider
-    connect(ui->XminSpinBox,    SIGNAL(valueChanged(double)),
-            SmallyOverallPlot->OASlider,
-                                SLOT(setMinValue(double)));
-    connect(ui->XmaxSpinBox,    SIGNAL(valueChanged(double)),
-            SmallyOverallPlot->OASlider,
-                                SLOT(setMaxValue(double)));
-    connect(SmallyOverallPlot->OASlider,
-                                &DoubleSlider::maxValueChanged,
-            ui->XmaxSpinBox,    &QDoubleSpinBox::setValue);
-    connect(SmallyOverallPlot->OASlider,
-                                &DoubleSlider::minValueChanged,
-            ui->XminSpinBox,    &QDoubleSpinBox::setValue);
+//    connect(ui->XminSpinBox,    SIGNAL(valueChanged(double)),
+//            SmallyOverallPlot->OASlider,
+//                                SLOT(setMinValue(double)));
+//    connect(ui->XmaxSpinBox,    SIGNAL(valueChanged(double)),
+//            SmallyOverallPlot->OASlider,
+//                                SLOT(setMaxValue(double)));
+//    connect(SmallyOverallPlot->OASlider,
+//                                &DoubleSlider::maxValueChanged,
+//            ui->XmaxSpinBox,    &QDoubleSpinBox::setValue);
+//    connect(SmallyOverallPlot->OASlider,
+//                                &DoubleSlider::minValueChanged,
+//            ui->XminSpinBox,    &QDoubleSpinBox::setValue);
 
     //Link Plot Info
     connect(SmallyOverallPlot,  &GPlot::MaxCountChanged,
@@ -234,6 +234,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->hostlineEdit->setText("localhost");
     ui->portlineEdit->setText("6666");
     setSourceType("模拟信号源");
+    Sleep(1000);
 }
 
 MainWindow::~MainWindow()
@@ -345,22 +346,22 @@ void MainWindow::setSourceType(QString type)
     }
 }
 
-void MainWindow::updatePlotTitle(){
-    SmallyOverallPlot->setTitle(SmallySpectral->Element + "-"
-                                + QString::number(SmallySpectral->NucleonNum));
-}
+//void MainWindow::updatePlotTitle(){
+//    SmallyOverallPlot->setTitle(SmallySpectral->Element + "-"
+//                                + QString::number(SmallySpectral->NucleonNum));
+//}
 
 void MainWindow::stopWatch()
 {
     if(isCountingDown)
     {
-        ui->MaintimeEdit->setTime(ui->MaintimeEdit->time().addMSecs(-1));
+        ui->MaintimeEdit->setTime(ui->MaintimeEdit->time().addMSecs(-10));
         if(ui->MaintimeEdit->time() == QTime(0,0,0,0))
             emit ui->actionPause->triggered();
     }
     else
     {
-        ui->MaintimeEdit->setTime(ui->MaintimeEdit->time().addMSecs(1));
+        ui->MaintimeEdit->setTime(ui->MaintimeEdit->time().addMSecs(10));
     }
 }
 

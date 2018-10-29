@@ -39,16 +39,16 @@ public slots:
 
 public:
     PartPlot *AttachedPlot;
-    DoubleSlider *OASlider;
+//    DoubleSlider *OASlider;
 
 private:
     const double LogChannel =
             double(20) * qLn(double(ChannelNum));
 };
 
-inline void OverallPlot::setTitle(QString title){
-    OASlider->setLabel(title);
-}
+//inline void OverallPlot::setTitle(QString title){
+//    OASlider->setLabel(title);
+//}
 
 
 

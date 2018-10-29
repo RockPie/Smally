@@ -51,7 +51,7 @@ signals:
 
 private slots:
     void showSpectral();
-    void updatePlotTitle();
+//    void updatePlotTitle();
     void setYLogAxis(bool isLog);
     void setXLogAxis(bool isLog);
     void setDataSeries(int val);

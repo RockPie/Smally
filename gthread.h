@@ -23,6 +23,7 @@ public slots:
     void setTimeThread(bool startThread);
     void startTimeThread();
     void pauseTimeThread();
+    void pauseAccurateThread();
 
 protected:
     void runMain();

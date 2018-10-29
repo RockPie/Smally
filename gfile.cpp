@@ -1,10 +1,12 @@
 #include "gfile.h"
 
 FileProcessor::FileProcessor(QWidget *parent,
-                             Spectral *inputSpec):
+                             Spectral *inputSpec,
+                             OverallPlot *inputplot):
     QObject(parent)
   , isNewFile(true)
-  , UserSpectral(inputSpec){
+  , UserSpectral(inputSpec)
+  , UserPlot(inputplot){
     WidgetBuff = parent;
 }
 

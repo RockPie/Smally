@@ -12,7 +12,7 @@ TimeThread::TimeThread(QObject *parent):
     //Initialize accurate timer (1ms accuracy)
     AccurateTimer = new QTimer();
     AccurateTimer->setTimerType(Qt::PreciseTimer);
-    AccurateTimer->setInterval(1);
+    AccurateTimer->setInterval(10);
     connect(AccurateTimer,  &QTimer::timeout,
             this,           &TimeThread::AccurateTimeoutHandle);
 }
@@ -71,6 +71,10 @@ void TimeThread::startTimeThread(){
 
 void TimeThread::pauseTimeThread(){
     this->stopMain();
+    this->stopAcc();
+}
+
+void TimeThread::pauseAccurateThread(){
     this->stopAcc();
 }
 

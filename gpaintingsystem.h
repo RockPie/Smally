@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QPalette>
 #include <QVector>
+#include <cmath>
 #include "gsetting.h"
 
 enum AxisType{
@@ -42,6 +43,8 @@ public:
     inline void setStyle(Qt::PenStyle input);
     inline void enableAutoScale(bool isenable = true);
     inline void disableAutoScale(bool isdisable = true);
+    inline void setRubberBand(bool isband);
+    inline void setMidLine(bool isMid);
 
 public slots:
     void setSysMin(double val);
@@ -50,11 +53,21 @@ public slots:
     void setMinBorder(double val);
     void setFilter(FilterType type);
 
+protected:
+    void enterEvent(QEvent *event);
+    void leaveEvent(QEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+
 signals:
     void SysMaxchanged(double val);
     void SysMinchanged(double val);
     void MaxCountChanged(QString val);
     void MinCountChanged(QString val);
+    void MouseSysMax(double val);
+    void MouseSysMin(double val);
+
 
 private:
     void paintEvent(QPaintEvent *event);
@@ -63,16 +76,26 @@ private:
 private:
     QVector <QPointF>* Data;
     QWidget* parentWidget;
-    QPen CurvePen, SysMinPen, SysMaxPen, AxisPen;
+    QPen CurvePen, SysMinPen, SysMaxPen, AxisPen, RubberPen,
+         InfoBoxPen, InfoPen, MidLinePen;
+    QFont InfoFont;
     bool isDotDisplay = false;
     double xMin = 0, xMax = 0;
     double yMin = 0, yMax = 0;
+    int xLoc = 0, yLoc = 0;
+
 
     double SysMin = 0, SysMax = 0;
 
     bool isDots = false;
     bool isSysEnabled = false;
     bool isAutoScale = false;
+    bool drawRubberBand = false;
+    bool isMidLine = false;
+    bool isMouseIn = false;
+
+    bool isDraggingMin = false;
+    bool isDraggingMax = false;
     FilterType LineFilter = NoFilter;
 
 };
@@ -117,4 +140,11 @@ inline void GPlot::disableAutoScale(bool isdisable){
     isAutoScale = ~isdisable;
 }
 
+inline void GPlot::setRubberBand(bool isband){
+    drawRubberBand = isband;
+}
+
+inline void GPlot::setMidLine(bool isMid){
+    isMidLine = isMid;
+}
 #endif // GPAINTINGSYSTEM_H
