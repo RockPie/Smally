@@ -38,8 +38,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Add component to widget
 //    ui->MidLay->addWidget(SmallyOverallPlot->OASlider);
-    ui->MidLay->addWidget(SmallyOverallPlot);
-    ui->MidLay->addWidget(SmallyOverallPlot->AttachedPlot);
+    ui->OALayout->addWidget(SmallyOverallPlot);
+    ui->PartLayout->addWidget(SmallyOverallPlot->AttachedPlot);
     ui->statusBar->addPermanentWidget(USBLight);
     ui->statusBar->addPermanentWidget(TCPInfo);
     ui->statusBar->addWidget(StatusLight);
@@ -49,10 +49,13 @@ MainWindow::MainWindow(QWidget *parent) :
 //    SmallyOverallPlot->setTitle(CurveTitle);
 
     //Set size of Left, Mid and Right layout
-    ui->splitter->setStretchFactor(0,8);
-    ui->splitter->setStretchFactor(1,1);
-    ui->splitter_2->setStretchFactor(0,1);
-    ui->splitter_2->setStretchFactor(1,3);
+    ui->plotSplitter->setStretchFactor(0,2);
+    ui->plotSplitter->setStretchFactor(1,5);
+    ui->leftSplitter->setStretchFactor(0,1);
+    ui->leftSplitter->setStretchFactor(1,3);
+    ui->rightSplitter->setStretchFactor(0,10);
+    ui->rightSplitter->setStretchFactor(1,1);
+
     qDebug()<<"Mainwindow Created";
 
     /***Connect Slots and Signals***/
