@@ -16,13 +16,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QSplitter" name="splitter_2">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
+     <widget class="QSplitter" name="leftSplitter">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
@@ -34,15 +28,15 @@
            <enum>QFrame::NoFrame</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="InfoPage">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>270</width>
-             <height>431</height>
+             <width>211</width>
+             <height>410</height>
             </rect>
            </property>
            <property name="toolTip">
@@ -56,6 +50,11 @@
              <layout class="QHBoxLayout" name="horizontalLayout">
               <item>
                <widget class="QDoubleSpinBox" name="XmaxSpinBox">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
                 <property name="maximum">
                  <double>10000.000000000000000</double>
                 </property>
@@ -66,6 +65,11 @@
               </item>
               <item>
                <widget class="QLabel" name="label_2">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>区域最大值</string>
                 </property>
@@ -77,6 +81,11 @@
              <layout class="QHBoxLayout" name="horizontalLayout_4">
               <item>
                <widget class="QDoubleSpinBox" name="XminSpinBox">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
                 <property name="maximum">
                  <double>10000.000000000000000</double>
                 </property>
@@ -84,6 +93,11 @@
               </item>
               <item>
                <widget class="QLabel" name="label_3">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>区域最小值</string>
                 </property>
@@ -95,6 +109,11 @@
              <layout class="QHBoxLayout" name="horizontalLayout_8">
               <item>
                <widget class="QLabel" name="label">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>整体最大计数：</string>
                 </property>
@@ -102,6 +121,11 @@
               </item>
               <item>
                <widget class="QLabel" name="MaxCount">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>0</string>
                 </property>
@@ -113,6 +137,11 @@
              <layout class="QHBoxLayout" name="horizontalLayout_9">
               <item>
                <widget class="QLabel" name="label_4">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>整体最小计数：</string>
                 </property>
@@ -120,6 +149,11 @@
               </item>
               <item>
                <widget class="QLabel" name="MinCount">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>0</string>
                 </property>
@@ -224,7 +258,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>270</width>
+             <width>207</width>
              <height>431</height>
             </rect>
            </property>
@@ -273,38 +307,48 @@
         </item>
        </layout>
       </widget>
-      <widget class="QSplitter" name="splitter">
+      <widget class="QSplitter" name="rightSplitter">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <widget class="QWidget" name="verticalLayoutWidget_2">
-        <layout class="QVBoxLayout" name="MidLay">
-         <property name="leftMargin">
-          <number>5</number>
-         </property>
-         <property name="topMargin">
-          <number>5</number>
-         </property>
-         <property name="rightMargin">
-          <number>5</number>
-         </property>
-         <property name="bottomMargin">
-          <number>5</number>
-         </property>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
+       <widget class="QSplitter" name="plotSplitter">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <widget class="QWidget" name="verticalLayoutWidget_4">
+         <layout class="QVBoxLayout" name="OALayout">
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>5</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="verticalLayoutWidget_5">
+         <layout class="QVBoxLayout" name="PartLayout">
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>5</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
        </widget>
        <widget class="QWidget" name="verticalLayoutWidget">
         <layout class="QVBoxLayout" name="RightLay" stretch="0,0,0,0,0,0,0">
@@ -318,7 +362,7 @@
            </property>
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>11</pointsize>
             </font>
            </property>
            <property name="currentSection">

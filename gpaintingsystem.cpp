@@ -102,7 +102,8 @@ void GPlot::paintEvent(QPaintEvent *event)
                                 MaxYVal * 1.5);
     }
 
-    this->updateBackground(&painter);
+    if(!isSysEnabled)
+        this->updateBackground(&painter);
 
     //Paint Data Curve
     painter.setPen(CurvePen);
@@ -514,13 +515,13 @@ void GPlot::mouseMoveEvent(QMouseEvent *event)
         if(isDraggingMax)
         {
              int real_x = int((double(event->pos().x()) * (xMax - xMin) / this->width()) + xMin);
-             if(abs(real_x - qRound(SysMax)) > 2 && real_x > SysMin)
+             if(abs(real_x - qRound(SysMax)) > 2 && real_x > SysMin && event->pos().x() <= this->width() )
                 emit MouseSysMax(double(real_x));
         }
         else if(isDraggingMin)
         {
             int real_x = int((double(event->pos().x()) * (xMax - xMin) / this->width()) + xMin);
-            if(abs(real_x - qRound(SysMin)) > 2 && real_x < SysMax)
+            if(abs(real_x - qRound(SysMin)) > 2 && real_x < SysMax && event->pos().x() >= 0)
                 emit MouseSysMin(double(real_x));
         }
     }
