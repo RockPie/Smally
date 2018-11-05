@@ -11,6 +11,7 @@
 #include "gcomponent.h"
 #include "gthread.h"
 #include "gclient.h"
+#include "gusb.h"
 
 namespace Ui {
 class MainWindow;

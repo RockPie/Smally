@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT          += core gui widgets network
+QT          += core gui widgets network printsupport
 
 #CONFIG      += qwt
 DEFINES     += QT_DLL QWT_DLL
@@ -15,6 +15,8 @@ DEFINES     += QT_DLL QWT_DLL
 #LIBS        += -L"C:\Qt\Qwt\build-qwt-Desktop_Qt_5_11_1_MinGW_32bit-Debug\lib" -lqwtd
 
 INCLUDEPATH += C:\Qt\5.11.1\mingw53_32\include\QWT
+
+LIBS += D:\MyDesktop\Smally\Smally\libusb.a
 
 TARGET = Smally
 TEMPLATE = app
@@ -43,7 +45,8 @@ SOURCES += \
     gfile.cpp \
     gpaintingsystem.cpp \
     gclient.cpp \
-    newfile_dialog.cpp
+    newfile_dialog.cpp \
+    gusb.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -55,7 +58,9 @@ HEADERS += \
     gfile.h \
     gpaintingsystem.h \
     gclient.h \
-    newfile_dialog.h
+    newfile_dialog.h \
+    lusb0_usb.h \
+    gusb.h
 
 FORMS += \
         mainwindow.ui \
@@ -70,3 +75,6 @@ RESOURCES += \
     image.qrc \
     icon.qrc \
     bispec.qrc
+
+DISTFILES += \
+    libusb.a
