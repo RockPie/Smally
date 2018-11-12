@@ -40,6 +40,7 @@ private:
     DataEngine *DataSource;
     GNetwork *SmallyClient;
     QTime TimeBuffer;
+    GUSB *SmallyUSB;
     bool flagYAxisLog;
     bool flagXAxisLog;
     bool isLinked;
@@ -68,8 +69,10 @@ private slots:
     void showLinkError(QString info);
 
     void changeButton();
+    void onUSBAutoClicked(bool isAuto);
 
     void setSourceType(QString type);
+    void USBDeviceFound();
 };
 
 #endif // MAINWINDOW_H

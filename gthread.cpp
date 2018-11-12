@@ -36,7 +36,6 @@ void TimeThread::runMain()
 
 void TimeThread::MainTimeoutHandle()
 {
-    //qDebug()<<"Timeout Event"<<TimerCounter;
     if(TimerCounter >= 500)
         TimerCounter = 0;
     else

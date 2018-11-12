@@ -15,7 +15,7 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+    <item row="1" column="0">
      <widget class="QSplitter" name="leftSplitter">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -35,8 +35,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>211</width>
-             <height>410</height>
+             <width>391</width>
+             <height>431</height>
             </rect>
            </property>
            <property name="toolTip">
@@ -47,7 +47,19 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout">
+             <layout class="QVBoxLayout" name="verticalLayout_5">
+              <item>
+               <widget class="QLabel" name="label_2">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>感兴趣区右边界：</string>
+                </property>
+               </widget>
+              </item>
               <item>
                <widget class="QDoubleSpinBox" name="XmaxSpinBox">
                 <property name="font">
@@ -63,22 +75,22 @@
                 </property>
                </widget>
               </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_4">
               <item>
-               <widget class="QLabel" name="label_2">
+               <widget class="QLabel" name="label_3">
                 <property name="font">
                  <font>
                   <pointsize>10</pointsize>
                  </font>
                 </property>
                 <property name="text">
-                 <string>区域最大值</string>
+                 <string>感兴趣区左边界：</string>
                 </property>
                </widget>
               </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_4">
               <item>
                <widget class="QDoubleSpinBox" name="XminSpinBox">
                 <property name="font">
@@ -88,18 +100,6 @@
                 </property>
                 <property name="maximum">
                  <double>10000.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_3">
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>区域最小值</string>
                 </property>
                </widget>
               </item>
@@ -173,6 +173,13 @@
                </size>
               </property>
              </spacer>
+            </item>
+            <item>
+             <widget class="Line" name="line_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -258,7 +265,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>207</width>
+             <width>391</width>
              <height>431</height>
             </rect>
            </property>
@@ -351,7 +358,7 @@
         </widget>
        </widget>
        <widget class="QWidget" name="verticalLayoutWidget">
-        <layout class="QVBoxLayout" name="RightLay" stretch="0,0,0,0,0,0,0">
+        <layout class="QVBoxLayout" name="RightLay" stretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
          <item>
           <widget class="QTimeEdit" name="MaintimeEdit">
            <property name="minimumSize">
@@ -387,9 +394,14 @@
           </spacer>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_14">
+          <layout class="QHBoxLayout" name="horizontalLayout_21">
            <item>
             <widget class="QLabel" name="label_7">
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
              <property name="text">
               <string>数据源：</string>
              </property>
@@ -409,9 +421,21 @@
                <height>0</height>
               </size>
              </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
              <item>
               <property name="text">
                <string>模拟信号源</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>USB数据源</string>
               </property>
              </item>
              <item>
@@ -422,6 +446,63 @@
             </widget>
            </item>
           </layout>
+         </item>
+         <item>
+          <widget class="Line" name="line_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_17">
+           <item>
+            <widget class="QPushButton" name="USBstartButton">
+             <property name="text">
+              <string>USB开始</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="USBpauseButton">
+             <property name="text">
+              <string>USB暂停</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_18">
+           <item>
+            <widget class="QPushButton" name="USBclearButton">
+             <property name="text">
+              <string>USB清空</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="USBfetchButton">
+             <property name="text">
+              <string>USB获取</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="USBAutoBox">
+           <property name="text">
+            <string>USB自动获取</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_15">
@@ -464,9 +545,21 @@
           </layout>
          </item>
          <item>
+          <widget class="Line" name="line_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
           <layout class="QHBoxLayout" name="horizontalLayout_12">
            <item>
             <widget class="QLabel" name="label_5">
+             <property name="font">
+              <font>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
              <property name="text">
               <string>主机：</string>
              </property>
@@ -485,6 +578,11 @@
                <width>0</width>
                <height>0</height>
               </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>9</pointsize>
+              </font>
              </property>
             </widget>
            </item>
@@ -518,7 +616,43 @@
           </layout>
          </item>
          <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_19">
+           <item>
+            <widget class="QPushButton" name="TCPstartButton">
+             <property name="text">
+              <string>TCP开始</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="TCPpauseButton">
+             <property name="text">
+              <string>TCP暂停</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_20">
+           <item>
+            <widget class="QPushButton" name="TCPclearButton">
+             <property name="text">
+              <string>TCP清空</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
           <widget class="QPushButton" name="linkButton">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="text">
             <string>连接</string>
            </property>

@@ -95,3 +95,10 @@ QString Spectral::getInfo() const{
     QString Strbuff = QString::number(NucleonNum,'f', 0);
     return Element + "-" +Strbuff;
 }
+
+void Spectral::getData(quint64 *input)
+{
+    for(int counter = 0; counter < ChannelNum; counter++)
+        if(input[counter] > 0 && input[counter] < 1000000)
+            CountingData[counter] = input[counter];
+}

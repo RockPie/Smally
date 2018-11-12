@@ -1,10 +1,16 @@
 #ifndef GCLIENT_H
 #define GCLIENT_H
 
+#define TCP_START 0xfc
+#define TCP_PAUSE 0xfe
+#define TCP_CLEAR 0xff
+
 #include <QtNetwork>
 #include <QTextStream>
 #include <QAbstractSocket>
 #include <QThread>
+#include <cmath>
+#include "gsetting.h"
 
 class GNetwork: public QThread
 {
@@ -24,18 +30,24 @@ public slots:
     void setPortNum(QString str);
     void disconnect();
 
+    void sendTCPstart();
+    void sendTCPpause();
+    void sendTCPclear();
+
 protected:
     virtual void run();
 
 signals:
     void newConnectionSet();
-    void messageReceived(QString message);
+    void messageReceived(quint64 *val);
     void errorMet(QString errorInfo);
     void connectionDisabled();
 
 private:
     QTcpSocket *GtcpSocket;
     QString GtcpMessage;
+    char* readBuffer;
+    quint64 *SpectralData;
 
     QString hostName;
     quint16 portNum;

@@ -27,13 +27,14 @@ public slots:
     void Reset();
     inline void setElement(QString ele);
     inline void setNucNum(uint nucnum);
+    void getData(quint64 *input);
 
 public:
     QString Element;
     uint NucleonNum;
 
 private:
-    uint64_t *CountingData;
+    quint64 *CountingData;
 
 signals:
     void SpecChanged();

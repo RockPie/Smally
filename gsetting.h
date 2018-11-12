@@ -18,6 +18,18 @@
 #define RecLength 140
 #define HalfWidth 20
 
+#define USB_clear 0xFFCC
+#define USB_pause 0xFFDD
+#define USB_start 0xFFEE
+#define USB_fetch 0xFFFF
+
+#define USB_title 0xFFFF
+#define USB_VID   0x0471
+#define USB_PID   0x0666
+
+#define EP_IN     0x82
+#define EP_OUT    0x01
+
 #define FileInfo "Smally Spectral version 0.01"
 
 

@@ -5,10 +5,14 @@ GNetwork::GNetwork(QObject *parent)
     ,GtcpMessage(QString())
     ,hostName(QString())
     ,portNum(0)   {
+    readBuffer = new char[8*ChannelNum];
+    SpectralData = new quint64[ChannelNum];
 }
 
 GNetwork::~GNetwork()
 {
+    delete []SpectralData;
+    delete []readBuffer;
     this->disconnect();
     this->requestInterruption();
     this->quit();
@@ -17,14 +21,18 @@ GNetwork::~GNetwork()
 
 void GNetwork::readMessage()
 {
-    QByteArray buffer;
-    buffer = GtcpSocket->readAll();
-    if(!buffer.isEmpty())
+    GtcpSocket->read(readBuffer, 8*ChannelNum);
+    for(int counter = 0; counter < ChannelNum; counter++)
     {
-        GtcpMessage += tr(buffer);
+        SpectralData[counter] = 0;
+        for(int subcounter = 0; subcounter < 8; subcounter++)
+        {
+            SpectralData[counter] +=
+            readBuffer[counter * 8 + subcounter] * pow(10, subcounter);
+        }
+        //qDebug()<<SpectralData[counter];
     }
-    qDebug()<<GtcpMessage;
-    emit messageReceived(GtcpMessage);
+    emit messageReceived(SpectralData);
 }
 
 void GNetwork::run()
@@ -71,7 +79,7 @@ void GNetwork::run()
         //Send Success Signal
         emit newConnectionSet();
         //Wait for Data Input
-        GtcpSocket->waitForReadyRead(5000);
+        GtcpSocket->waitForReadyRead(3000);
         //After this we may get error signal because of timeout event
     }
 }
@@ -93,7 +101,6 @@ void GNetwork::setPortNum(QString str){
 }
 
 void GNetwork::onDisconnected(){
-    GtcpSocket->deleteLater();
     isConnectionOk = false;
 }
 
@@ -107,6 +114,22 @@ void GNetwork::disconnect()
 {
     GtcpSocket->deleteLater();
     isThreadStopped = true;
+    msleep(1000);
     emit connectionDisabled();
+}
+
+void GNetwork::sendTCPstart(){
+    char buf = char(TCP_START);
+    GtcpSocket->write(&buf, 1);
+}
+
+void GNetwork::sendTCPpause(){
+    char buf = char(TCP_PAUSE);
+    GtcpSocket->write(&buf, 1);
+}
+
+void GNetwork::sendTCPclear(){
+    char buf = char(TCP_CLEAR);
+    GtcpSocket->write(&buf, 1);
 }
 

@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     SmallyOverallPlot = new OverallPlot(this);
     SmallyMainThread  = new TimeThread(this);
     SmallyFileSys     = new FileProcessor(this, SmallySpectral);
+    SmallyUSB         = new GUSB(this);
     USBLight          = new GGuideLight(this);
     StatusLight       = new GGuideLight(this);
     TCPInfo           = new QLabel(this);
@@ -88,12 +89,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionPause,    &QAction::triggered,
             this,               &MainWindow::showSYSpaused);
 
-    connect(ui->actionClear,    &QAction::triggered,
-            ui->actionPause,    &QAction::setEnabled);
-    connect(ui->actionClear,    &QAction::triggered,
-            ui->actionStart,    &QAction::setDisabled);
-    connect(ui->actionClear,    &QAction::triggered,
-            StatusLight,        &GGuideLight::setRed);
+//    connect(ui->actionClear,    &QAction::triggered,
+//            ui->actionPause,    &QAction::setEnabled);
+//    connect(ui->actionClear,    &QAction::triggered,
+//            ui->actionStart,    &QAction::setDisabled);
+//    connect(ui->actionClear,    &QAction::triggered,
+//            StatusLight,        &GGuideLight::setRed);
     connect(ui->actionClear,    &QAction::triggered,
             this,               &MainWindow::showSYScleared);
     connect(SmallySpectral,     &Spectral::SpecChanged,
@@ -175,6 +176,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->HAFBox,         &QCheckBox::clicked,
             SmallyOverallPlot,  &OverallPlot::setHighAccuracy);
 
+
     //Link double slider
 //    connect(ui->XminSpinBox,    SIGNAL(valueChanged(double)),
 //            SmallyOverallPlot->OASlider,
@@ -231,6 +233,28 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->SimcomboBox,    SIGNAL(currentIndexChanged(int)),
             DataSource,         SLOT(setDataNum(int)));
 
+    connect(SmallyClient,       &GNetwork::messageReceived,
+            SmallySpectral,     &Spectral::getData, Qt::QueuedConnection);
+
+    connect(ui->TCPstartButton, &QPushButton::clicked,
+            SmallyClient,       &GNetwork::sendTCPstart);
+    connect(ui->TCPpauseButton, &QPushButton::clicked,
+            SmallyClient,       &GNetwork::sendTCPpause);
+    connect(ui->TCPclearButton, &QPushButton::clicked,
+            SmallyClient,       &GNetwork::sendTCPclear);
+
+    //USB
+    connect(ui->USBstartButton, &QPushButton::clicked,
+            SmallyUSB,          &GUSB::startUSB);
+    connect(ui->USBpauseButton, &QPushButton::clicked,
+            SmallyUSB,          &GUSB::pauseUSB);
+    connect(ui->USBclearButton, &QPushButton::clicked,
+            SmallyUSB,          &GUSB::clearUSB);
+    connect(ui->USBfetchButton, &QPushButton::clicked,
+            SmallyUSB,          &GUSB::fetchUSB);
+    connect(SmallyUSB,          &GUSB::DevFound,
+            this,               &MainWindow::USBDeviceFound);
+
     qDebug()<<"Signals and slots connected";
 
     ui->XmaxSpinBox->setValue(ChannelNum - 1);
@@ -243,6 +267,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->TPFBox->setCheckState(Qt::Unchecked);
     ui->HAFBox->setCheckState(Qt::Unchecked);
     ui->actionPause->setDisabled(true);
+    ui->USBclearButton->setEnabled(false);
+    ui->USBstartButton->setEnabled(false);
+    ui->USBpauseButton->setEnabled(false);
+    ui->USBfetchButton->setEnabled(false);
+    ui->USBAutoBox->setEnabled(false);
     USBLight->update();
     StatusLight->update();
     this->showSYScleared();
@@ -251,6 +280,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->portlineEdit->setText("6666");
     setSourceType("模拟信号源");
     Sleep(1000);
+//    disconnect(DataSource,         &DataEngine::SimulateEvent,
+//               this,               &MainWindow::setDataSeries);
 }
 
 MainWindow::~MainWindow()
@@ -331,12 +362,18 @@ void MainWindow::changeButton()
         ui->linkButton->setText("连接");
         isLinked = false;
         emit stopLink();
+        ui->SourcecomboBox->setEnabled(true);
+        ui->hostlineEdit->setEnabled(true);
+        ui->portlineEdit->setEnabled(true);
     }
     else
     {
         ui->linkButton->setText("断开连接");
         isLinked = true;
         emit startLink();
+        ui->SourcecomboBox->setEnabled(false);
+        ui->hostlineEdit->setEnabled(false);
+        ui->portlineEdit->setEnabled(false);
     }
 }
 
@@ -344,21 +381,61 @@ void MainWindow::setSourceType(QString type)
 {
     if(type == "模拟信号源")
     {
-        connect(DataSource,         &DataEngine::SimulateEvent,
-                this,               &MainWindow::setDataSeries , Qt::QueuedConnection);
         ui->linkButton->setEnabled(false);
+        ui->USBclearButton->setEnabled(false);
+        ui->USBstartButton->setEnabled(false);
+        ui->USBpauseButton->setEnabled(false);
+        ui->USBfetchButton->setEnabled(false);
+        ui->USBAutoBox->setEnabled(false);
+        ui->TCPclearButton->setEnabled(false);
+        ui->TCPstartButton->setEnabled(false);
+        ui->TCPpauseButton->setEnabled(false);
         SmallySpectral->setElement("Example");
         SmallySpectral->setNucNum(0);
         ui->SimcomboBox->setEnabled(true);
+
+        connect(DataSource,         &DataEngine::SimulateEvent,
+                this,               &MainWindow::setDataSeries);
+        disconnect(SmallyUSB,          &GUSB::submitRes,
+                SmallySpectral,     &Spectral::getData);
     }
     else if(type == "外部服务器")
     {
-        disconnect(DataSource,         &DataEngine::SimulateEvent,
-                   this,               &MainWindow::setDataSeries);
         ui->linkButton->setEnabled(true);
+        ui->USBclearButton->setEnabled(false);
+        ui->USBstartButton->setEnabled(false);
+        ui->USBpauseButton->setEnabled(false);
+        ui->USBfetchButton->setEnabled(false);
+        ui->TCPclearButton->setEnabled(true);
+        ui->TCPstartButton->setEnabled(true);
+        ui->TCPpauseButton->setEnabled(true);
+        ui->USBAutoBox->setEnabled(false);
         SmallySpectral->setElement("Unknown");
         SmallySpectral->setNucNum(0);
         ui->SimcomboBox->setEnabled(false);
+
+        disconnect(DataSource,         &DataEngine::SimulateEvent,
+                   this,               &MainWindow::setDataSeries);
+        disconnect(SmallyUSB,          &GUSB::submitRes,
+                SmallySpectral,     &Spectral::getData);
+    }
+    else if(type == "USB数据源")
+    {
+        ui->TCPclearButton->setEnabled(false);
+        ui->TCPstartButton->setEnabled(false);
+        ui->TCPpauseButton->setEnabled(false);
+        ui->linkButton->setEnabled(false);
+        ui->SimcomboBox->setEnabled(false);
+
+        SmallySpectral->setElement("Unknown");
+        SmallySpectral->setNucNum(0);
+
+        disconnect(DataSource,         &DataEngine::SimulateEvent,
+                   this,               &MainWindow::setDataSeries);
+        connect(SmallyUSB,          &GUSB::submitRes,
+                SmallySpectral,     &Spectral::getData);
+
+        SmallyUSB->InitUSB();
     }
 }
 
@@ -379,6 +456,25 @@ void MainWindow::stopWatch()
     {
         ui->MaintimeEdit->setTime(ui->MaintimeEdit->time().addMSecs(10));
     }
+}
+
+void MainWindow::onUSBAutoClicked(bool isAuto)
+{
+    if(isAuto)
+        connect(SmallyMainThread,   &TimeThread::Timeout100ms,
+                SmallyUSB,          &GUSB::fetchUSB);
+    else
+        disconnect(SmallyMainThread,   &TimeThread::Timeout100ms,
+                   SmallyUSB,          &GUSB::fetchUSB);
+}
+
+void MainWindow::USBDeviceFound()
+{
+    ui->USBclearButton->setEnabled(true);
+    ui->USBstartButton->setEnabled(true);
+    ui->USBpauseButton->setEnabled(true);
+    ui->USBfetchButton->setEnabled(true);
+    ui->USBAutoBox->setEnabled(true);
 }
 
 
